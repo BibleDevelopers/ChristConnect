@@ -1,0 +1,50 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+  background: url('/resources/images/background.png') no-repeat center center/cover;
+  min-height: 100vh;
+  color: #000;
+  overflow: hidden;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 25px 60px;
+}
+
+.logo img {
+    width: 150px;
+    height: 150px;
+}
+
+nav {
+    font-size: 18px;
+}
+
+nav a {
+    text-decoration: none;
+    color: black;
+    margin: 0 12px;
+    font-weight: 500;
+}
+
+.hero {
+    text-align: left;
+    padding: 100px 80px;
+}
+
+.auth-links, .center-links {
+    font-size: 20px;
+}
+
+.auth-links a, .center-links a {
+    text-decoration: none;
+    color: black;
+    margin: 0 8px;
+}
