@@ -10,7 +10,7 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
-<body class="@yield('body-class')">
+<body {{ $attributes->merge(['class' => '']) }}>
     <header>
         <div class="logo">
             <img src="{{ Vite::asset('resources/images/logo.png') }}" alt="Christ Connect Logo">
@@ -23,13 +23,21 @@
         </nav>
 
         <div class="auth-links">
-            <a href="#">Login</a> |
-            <a href="#">Register</a>
+            @guest 
+                <a href="{{ route('login') }}">Login</a> |
+                <a href="{{ route('register') }}">Register</a>
+            @endguest
+
+            @auth
+                <a href="#">Dashboard</a> |
+                <a href="#">Logout</a>
+            @endauth
+
         </div>
     </header>
 
     <main>
-        @yield('content')
+        {{ $slot }}
     </main>
 
     <script src="{{ asset('js/script.js') }}"></script>

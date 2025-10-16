@@ -1,7 +1,5 @@
-@extends('layouts.app')
-
-@section('body-class', 'welcome-page')
-
-@section('content')
-
-@endsection
+<x-app class="welcome-page">
+    <div class="container text-center mt-5">
+        
+    </div>
+</x-app>
