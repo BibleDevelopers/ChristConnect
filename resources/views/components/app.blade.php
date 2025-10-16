@@ -13,11 +13,13 @@
 <body {{ $attributes->merge(['class' => '']) }}>
     <header>
         <div class="logo">
-            <img src="{{ Vite::asset('resources/images/logo.png') }}" alt="Christ Connect Logo">
+            <a href="{{ url('/') }}">
+                <img src="{{ Vite::asset('resources/images/logo.png') }}" alt="Christ Connect Logo">
+            </a>
         </div>
 
         <nav class="center-links">
-            <a href="#">Alkitab</a> |
+            <a href="alkitab">Alkitab</a> |
             <a href="#">Renungan Harian</a> |
             <a href="#">Donasi</a>
         </nav>
