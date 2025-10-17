@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('bible_verses', function (Blueprint $table) {
             $table->id();
-            $table->string('version'); // e.g., 'tb', 'ayt'
-            $table->string('book');    // e.g., 'genesis', 'exodus'
+            $table->string('version');
+            $table->string('book');
             $table->unsignedInteger('chapter');
             $table->unsignedInteger('verse');
             $table->text('text');

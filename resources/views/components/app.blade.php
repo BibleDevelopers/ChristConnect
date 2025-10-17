@@ -31,7 +31,7 @@
             @endguest
 
             @auth
-                <a href="#">Dashboard</a> |
+                <a href="dashboard">Dashboard</a> |
                 <a href="#">Logout</a>
             @endauth
 

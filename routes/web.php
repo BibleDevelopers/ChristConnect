@@ -15,13 +15,15 @@ Route::get('login', function () {
 Route::post('login', [LoginController::class, '_invoke'])->name('login.attempt');
 
 Route::get('register', function (){
-    return view('auth.register');
+    return view('auth.registration');
 })->name('register');
+
+Route::post('register', [App\Http\Controllers\RegisterController::class, '__invoke'])->name('register.attempt');
 
 Route::view('dashboard', 'dashboard')->name('dashboard');
 
 Route::get('alkitab', [AlkitabController::class, 'index'])->name('alkitab');
 
-// Internal API for Alkitab
+// Internal API untuk Alkitab
 Route::get('/api/alkitab/{version}/{book}/{chapter}', [AlkitabController::class, 'getChapter']);
 Route::get('/api/alkitab/search/{version}', [AlkitabController::class, 'search']);

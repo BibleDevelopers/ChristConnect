@@ -56,7 +56,7 @@ class AlkitabController extends Controller
         return [
             ['id' => 'genesis', 'name' => 'Kejadian', 'chapters' => 50],
             ['id' => 'exodus', 'name' => 'Keluaran', 'chapters' => 40],
-            // ... (the rest of the books can be added here)
+            // isi semua kitab disini
         ];
     }
 }
