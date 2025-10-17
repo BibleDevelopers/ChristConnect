@@ -8,7 +8,7 @@ body {
   background: url('/resources/images/background.png') no-repeat center center/cover;
   min-height: 100vh;
   color: #000;
-  overflow: hidden;
+  overflow: auto;
 }
 
 body.auth-background {
@@ -16,6 +16,13 @@ body.auth-background {
     min-height: 100vh;
     color: #000;
     overflow: hidden;
+}
+
+body.dashboard-background {
+    background: url('/resources/images/auth-background.png') no-repeat center center/cover;
+    min-height: 100vh;
+    color: #000;
+    overflow: auto;
 }
 
 body.plain-background {
@@ -212,4 +219,56 @@ nav a {
     color: #337ab7;
     text-decoration: none;
     font-family: 'Instrument Sans', sans-serif;
+}
+
+/* Dashboard Styles */
+.dashboard-container {
+    max-width: 900px;
+    margin: 50px auto;
+    padding: 20px;
+}
+.dashboard-card {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+    padding: 20px;
+}
+.dashboard-card h2 {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+}
+.form-group {
+    margin-bottom: 1rem;
+}
+.form-group label {
+    display: block;
+    margin-bottom: .5rem;
+    font-weight: 500;
+}
+.form-group input {
+    width: 100%;
+    padding: .5rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+.btn {
+    padding: .5rem 1rem;
+    border-radius: 4px;
+    text-decoration: none;
+    color: #fff;
+    font-weight: bold;
+}
+.btn-primary {
+    background-color: #337ab7;
+}
+.btn-primary:hover {
+    background-color: #286090;
+}
+.btn-success {
+    background-color: #5cb85c;
+}
+.btn-success:hover {
+    background-color: #4cae4c;
 }

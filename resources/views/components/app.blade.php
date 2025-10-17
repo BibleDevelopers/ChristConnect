@@ -10,6 +10,7 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
+@props(['page' => ''])
 <body {{ $attributes->merge(['class' => '']) }}>
     <header>
         <div class="logo">
@@ -31,7 +32,9 @@
             @endguest
 
             @auth
-                <a href="dashboard">Dashboard</a> |
+                @if($page !== 'dashboard')
+                    <a href="dashboard">Dashboard</a> |
+                @endif
                 <a href="#">Logout</a>
             @endauth
 
