@@ -35,7 +35,12 @@
                 @if($page !== 'dashboard')
                     <a href="dashboard">Dashboard</a> |
                 @endif
-                <a href="#">Logout</a>
+                <form method="POST" action="{{ route('logout') }}" style="display: inline;">
+                    @csrf
+                    <a href="#" onclick="event.preventDefault(); this.closest('form').submit();">
+                        Logout
+                    </a>
+                </form>
             @endauth
 
         </div>
