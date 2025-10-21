@@ -32,8 +32,8 @@
             @endguest
 
             @auth
-                @if($page !== 'dashboard')
-                    <a href="dashboard">Dashboard</a> |
+                @if($page !== 'profile')
+                    <a href="profile">Profile</a> |
                 @endif
                 <form method="POST" action="{{ route('logout') }}" style="display: inline;">
                     @csrf
