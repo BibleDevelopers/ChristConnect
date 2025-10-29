@@ -8,10 +8,20 @@
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Open+Sans&display=swap" rel="stylesheet">
     <link href="{{ asset('css/styles.css') }}" rel="stylesheet">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+    {{-- Dynamically include donations.css if this is a donations page --}}
+    @if (Str::startsWith(Route::currentRouteName(), 'donations'))
+        @vite(['resources/css/donations.css'])
+    @else
+        @vite(['resources/css/app.css'])
+    @endif
+
+    @vite(['resources/js/app.js'])
 </head>
 
 @props(['page' => ''])
-<body {{ $attributes->merge(['class' => '']) }}>
+<!-- <body {{ $attributes->merge(['class' => '']) }}> -->
+<body class="{{ Route::currentRouteName() }} {{ $attributes->get('class') }}">
     <header>
         <div class="logo">
             <a href="{{ url('/') }}">
@@ -22,7 +32,8 @@
         <nav class="center-links">
             <a href="alkitab">Alkitab</a> |
             <a href="#">Renungan Harian</a> |
-            <a href="#">Donasi</a>
+            <!-- <a href="#">Donasi</a> -->
+            <a href="{{ route('donations.index') }}">Donasi</a>
         </nav>
 
         <div class="auth-links">
