@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\Auth\Events\Registered;
+use App\Models\Wallet;
+use App\Models\Transaction;
 
 class RegisterController extends Controller
 {
@@ -23,6 +25,21 @@ class RegisterController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+        ]);
+        
+        $initialBalance = 50000; // Tentukan saldo awal
+
+        // 1. Buatkan dia Wallet
+        $user->wallet()->create([
+            'balance' => $initialBalance
+        ]);
+
+        // 2. Catat di Transaction
+        $user->transactions()->create([
+            'user_id' => $user->id, // Pastikan user_id ada di model Transaction
+            'type' => 'initial_balance',
+            'amount' => $initialBalance, // Positif karena uang masuk
+            'description' => 'Saldo awal pendaftaran'
         ]);
 
         event(new Registered($user));

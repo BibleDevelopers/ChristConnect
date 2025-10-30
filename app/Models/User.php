@@ -6,6 +6,9 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use App\Models\Wallet;
+use App\Models\Transaction;
+use App\Models\Badge;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
@@ -20,7 +23,7 @@ class User extends Authenticatable implements MustVerifyEmail
     protected $fillable = [
         'name',
         'email',
-        'password',
+        'password', // kgk usah nambahin wallet karena dibuat di tabel wallet
     ];
 
     /**
@@ -44,5 +47,19 @@ class User extends Authenticatable implements MustVerifyEmail
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+    public function wallet()
+    {
+        return $this->hasOne(Wallet::class);
+    }
+
+    public function transactions()
+    {
+        return $this->hasMany(Transaction::class);
+    }
+
+    public function badges()
+    {
+        return $this->belongsToMany(Badge::class);
     }
 }
