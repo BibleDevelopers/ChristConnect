@@ -26,6 +26,8 @@ class User extends Authenticatable implements MustVerifyEmail
         'password',
         'role',
         'total_donated',
+        'email_verification_code',
+        'email_verification_expires_at',
     ];
 
     /**
@@ -49,6 +51,7 @@ class User extends Authenticatable implements MustVerifyEmail
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'total_donated' => 'int',
+            'email_verification_expires_at' => 'datetime',
         ];
     }
     public function wallet()

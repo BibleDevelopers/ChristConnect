@@ -44,15 +44,10 @@ class RegisterController extends Controller
         $user->email_verification_expires_at = now()->addMinutes(15);
         $user->save();
 
-<<<<<<< HEAD
         // send verification code email
         \Illuminate\Support\Facades\Mail::to($user->email)->send(new \App\Mail\EmailVerificationCode($code, $user->name));
 
         // redirect user to the verification code form (do not auto-login)
         return redirect()->route('verification.code.show', ['email' => $user->email])->with('status', 'verification-code-sent');
-=======
-        Auth::login($user);
-        return redirect()->route('login.attempt');
->>>>>>> a0cecfdbe4f1a246c4ab2b321bd9abdaa9a469c9
     }
 }
