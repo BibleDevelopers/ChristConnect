@@ -46,7 +46,7 @@
                         <form id="name-form" action="{{ route('profile.updateName') }}" method="POST" style="margin-bottom:0;">
                             @csrf
                             <div class="form-group">
-                                <label>Nama</label>
+                                <label>Name</label>
                                 <input id="name-input" name="name" type="text" value="{{ $user->name }}" disabled style="width:100%;">
                             </div>
                         <div class="form-group">
@@ -58,13 +58,13 @@
                                 <input type="text" value="{{ $user->created_at->format('d M Y') }}" disabled style="width:100%;">
                         </div>
                             <div id="profile-actions" style="display:none;margin-top:.5rem;display:flex;justify-content:flex-end;gap:.5rem;">
-                                <button type="submit" id="save-name-btn" class="btn btn-primary">Simpan</button>
+                                <button type="submit" id="save-name-btn" class="btn btn-primary">Save</button>
                                 <button type="button" id="cancel-edit-btn" class="btn" style="background:#6c757d;color:#fff;">Cancel</button>
                             </div> 
                         </form>
 
                         <hr style="margin:1rem 0;">
-                        <h3>Wallet Saya</h3>
+                        <h3>My Wallet</h3>
                         @php($balance = optional($user->wallet)->balance ?? 0)
                         <p><strong>Balance:</strong> Rp{{ number_format($balance, 0, ',', '.') }}</p>
                         <p><strong>Total Donations:</strong> Rp{{ number_format($user->total_donated ?? 0, 0, ',', '.') }}</p>
@@ -74,9 +74,22 @@
                         @if($user->badges->isEmpty())
                             <p>No badges yet. Donate to unlock badges.</p>
                         @else
-                            <ul style="list-style:none;padding:0;">
+                            <ul style="list-style:none;padding:0;display:flex;flex-wrap:wrap;gap:0.75rem;">
                                 @foreach($user->badges as $badge)
+                                        @php($b = strtolower($badge->name ?? ''))
+                                        @if (Str::contains($b, 'bronze'))
+                                            @php($img = Vite::asset('resources/images/bronze.png'))
+                                        @elseif (Str::contains($b, 'silver'))
+                                            @php($img = Vite::asset('resources/images/silver.png'))
+                                        @elseif (Str::contains($b, 'gold'))
+                                            @php($img = Vite::asset('resources/images/gold.png'))
+                                        @elseif (Str::contains($b, 'platinum'))
+                                            @php($img = Vite::asset('resources/images/platinum.png'))
+                                        @else
+                                            @php($img = Vite::asset('resources/images/bronze.png'))
+                                        @endif
                                     <li style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.75rem;">
+                                        <img src="{{ $img }}" alt="{{ $badge->name }} badge" style="width:48px;height:48px;border-radius:6px;background:#fff;border:1px solid #eee;" />
                                         <div>
                                             <strong>{{ $badge->name }}</strong><br>
                                             <small>Minimum donation: Rp{{ number_format($badge->min_donation, 0, ',', '.') }}</small>

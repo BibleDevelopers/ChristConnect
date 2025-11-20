@@ -33,10 +33,10 @@
         @endif
 
         <div class="profile-grid" style="display:grid;grid-template-columns:1fr 380px;gap:20px;">
-            <div class="dashboard-card">
+                <div class="dashboard-card">
                 <h2>Personal Information</h2>
                 <div class="form-group">
-                    <label>Nama</label>
+                    <label>Name</label>
                     <input type="text" value="{{ Auth::user()->name }}" disabled>
                 </div>
                 <div class="form-group">

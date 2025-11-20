@@ -29,7 +29,7 @@
         <table>
             <thead>
                 <tr>
-                    <th>Nama</th>
+                    <th>Name</th>
                     <th>Email</th>
                     <th>Role</th>
                     <th>Wallet Balance</th>
