@@ -82,9 +82,12 @@ Route::delete('/renungan-harian/{renungan}/comment/{comment}', [RenunganControll
 Route::middleware(['auth'])->group(function () {
     Route::get('/donations', [DonationController::class, 'index'])->name('donations.index');
     Route::get('/profile', function () {
-        $user = Auth::user()->load('badges', 'wallet');
+        $user = Auth::user()->refresh()->load('badges', 'wallet');
         return view('profile.show', compact('user'));
     })->name('profile');
+
+    Route::post('/profile/update-name', [App\Http\Controllers\ProfileController::class, 'updateName'])->middleware(['auth'])->name('profile.updateName');
+    Route::post('/profile/change-password', [App\Http\Controllers\ProfileController::class, 'changePassword'])->name('profile.changePassword');
 
     Route::get('/donations/create', [DonationController::class, 'create'])->name('donations.create');
     Route::post('/donations', [DonationController::class, 'store'])->name('donations.store');

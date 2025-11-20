@@ -38,10 +38,12 @@
                 <div style="display:flex;flex-direction:column;align-items:center;">
                     <h2 style="width:100%;text-align:center;">Informasi Akun</h2>
                     <div style="width:100%;max-width:560px;">
-                        <div class="form-group">
-                            <label>Nama</label>
-                            <input type="text" value="{{ $user->name }}" disabled style="width:100%;">
-                        </div>
+                        <form id="name-form" action="{{ route('profile.updateName') }}" method="POST" style="margin-bottom:0;">
+                            @csrf
+                            <div class="form-group">
+                                <label>Nama</label>
+                                <input id="name-input" name="name" type="text" value="{{ $user->name }}" disabled style="width:100%;">
+                            </div>
                         <div class="form-group">
                             <label>Email</label>
                             <input type="text" value="{{ $user->email }}" disabled style="width:100%;">
@@ -51,9 +53,14 @@
                             <input type="text" value="{{ $user->hasVerifiedEmail() ? 'Ya' : 'Belum' }}" disabled style="width:100%;">
                         </div>
                         <div class="form-group">
-                            <label>Bergabung Sejak</label>
-                            <input type="text" value="{{ $user->created_at->format('d M Y') }}" disabled style="width:100%;">
+                                <label>Bergabung Sejak</label>
+                                <input type="text" value="{{ $user->created_at->format('d M Y') }}" disabled style="width:100%;">
                         </div>
+                            <div id="profile-actions" style="display:none;margin-top:.5rem;display:flex;justify-content:flex-end;gap:.5rem;">
+                                <button type="submit" id="save-name-btn" class="btn btn-primary">Simpan</button>
+                                <button type="button" id="cancel-edit-btn" class="btn" style="background:#6c757d;color:#fff;">Batal</button>
+                            </div>
+                        </form>
 
                         <hr style="margin:1rem 0;">
                         <h3>Wallet Saya</h3>
@@ -80,6 +87,14 @@
                                 @endforeach
                             </ul>
                         @endif
+                        <hr style="margin:1.5rem 0;">
+                        <div class="dashboard-card" style="margin-top:1rem;padding:1.5rem 1rem;">
+                            <h3 style="margin-bottom:.5rem;font-size:1.1rem;text-align:center;">Two-Factor Authentication (2FA)</h3>
+                            <p style="color:#666;margin-bottom:.75rem;text-align:center;">Aktifkan 2FA untuk menambahkan lapisan keamanan pada akun Anda.</p>
+                            <div style="display:flex;justify-content:center;gap:.5rem;">
+                                <button class="btn btn-success">Aktifkan 2FA</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -89,7 +104,7 @@
                     <h2 style="width:100%;text-align:center;">Keamanan</h2>
                     <div style="width:100%;max-width:560px;">
                         <h3 style="margin-top:0.5rem;margin-bottom:.75rem;font-size:1rem;">Ganti Password</h3>
-                        <form action="#" method="POST">
+                        <form action="{{ route('profile.changePassword') }}" method="POST">
                             @csrf
                             <div class="form-group">
                                 <label for="current_password">Password Saat Ini</label>
@@ -108,13 +123,6 @@
                                 <a href="#" id="cancel-security-btn" class="btn btn-success" style="background:#6c757d;">Batalkan</a>
                             </div>
                         </form>
-
-                        <hr style="margin:1rem 0;">
-                        <h3 style="margin-bottom:.5rem;font-size:1rem;">Two-Factor Authentication</h3>
-                        <p style="color:#666;margin-bottom:.75rem;">Aktifkan 2FA untuk menambahkan lapisan keamanan pada akun Anda.</p>
-                        <div style="display:flex;gap:.5rem;">
-                            <button class="btn btn-success">Aktifkan 2FA</button>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -124,18 +132,24 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-    const changeBtn = document.getElementById('change-password-btn');
-    const editBtn = document.getElementById('edit-profile-btn');
-    const cancelSecurityBtn = document.getElementById('cancel-security-btn');
+        const changeBtn = document.getElementById('change-password-btn');
+        const editBtn = document.getElementById('edit-profile-btn');
+        const cancelSecurityBtn = document.getElementById('cancel-security-btn');
         const securityCard = document.getElementById('security-card');
         const infoCard = document.getElementById('info-card');
+        const nameInput = document.getElementById('name-input');
+        const profileActions = document.getElementById('profile-actions');
+        const saveNameBtn = document.getElementById('save-name-btn');
+        const cancelEditBtn = document.getElementById('cancel-edit-btn');
 
-        // initialize: info is visible, so Edit should be gray/disabled, Change is blue/enabled
+        let originalName = nameInput ? nameInput.value : '';
+
+        // initialize: info is visible, so Edit should be enabled, Change is blue/enabled
         if (editBtn) {
-            editBtn.disabled = true;
-            editBtn.classList.remove('btn-primary');
-            editBtn.style.background = '#6c757d';
-            editBtn.style.color = '#fff';
+            editBtn.disabled = false;
+            editBtn.classList.add('btn-primary');
+            editBtn.style.background = '';
+            editBtn.style.color = '';
         }
         if (changeBtn) {
             changeBtn.disabled = false;
@@ -172,7 +186,7 @@
                 // hide security, show info
                 securityCard.style.display = 'none';
                 infoCard.style.display = 'block';
-                // enable and highlight change button, and disable edit
+                // enable and highlight change button, and enable edit
                 if (changeBtn) {
                     changeBtn.disabled = false;
                     changeBtn.classList.add('btn-primary');
@@ -180,10 +194,10 @@
                     changeBtn.style.color = '';
                 }
                 if (editBtn) {
-                    editBtn.disabled = true;
-                    editBtn.classList.remove('btn-primary');
-                    editBtn.style.background = '#6c757d';
-                    editBtn.style.color = '#fff';
+                    editBtn.disabled = false;
+                    editBtn.classList.add('btn-primary');
+                    editBtn.style.background = '';
+                    editBtn.style.color = '';
                 }
             });
         }
@@ -191,22 +205,43 @@
         if (editBtn) {
             editBtn.addEventListener('click', function (e) {
                 e.preventDefault();
-                if (!securityCard || !infoCard) return;
-                // show info, hide security
-                securityCard.style.display = 'none';
-                infoCard.style.display = 'block';
-                // disable and gray out edit button; enable change button as blue
+                // Enable name input and show Save/Cancel
+                if (nameInput) {
+                    nameInput.disabled = false;
+                    nameInput.focus();
+                }
+                if (profileActions) {
+                    profileActions.style.display = 'flex';
+                }
+                // Disable edit button while editing
                 editBtn.disabled = true;
                 editBtn.classList.remove('btn-primary');
                 editBtn.style.background = '#6c757d';
                 editBtn.style.color = '#fff';
-                if (changeBtn) {
-                    changeBtn.disabled = false;
-                    changeBtn.classList.add('btn-primary');
-                    changeBtn.style.background = '';
-                    changeBtn.style.color = '';
+            });
+        }
+
+        if (cancelEditBtn) {
+            cancelEditBtn.addEventListener('click', function (e) {
+                e.preventDefault();
+                // Restore original name and disable input
+                if (nameInput) {
+                    nameInput.value = originalName;
+                    nameInput.disabled = true;
+                }
+                if (profileActions) {
+                    profileActions.style.display = 'none';
+                }
+                // Enable edit button again
+                if (editBtn) {
+                    editBtn.disabled = false;
+                    editBtn.classList.add('btn-primary');
+                    editBtn.style.background = '';
+                    editBtn.style.color = '';
                 }
             });
         }
+
+        // saveNameBtn is a submit button inside the form; we let the form submit normally.
     });
 </script>
