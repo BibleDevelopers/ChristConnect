@@ -127,13 +127,6 @@
     </div>
 </x-app>
 
-<style>
-    body {
-        background-image: none !important;
-        background-color: #fff;
-    }
-</style>
-
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const changeBtn = document.getElementById('change-password-btn');
