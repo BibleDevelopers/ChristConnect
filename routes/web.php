@@ -53,6 +53,9 @@ Route::get('/renungan', [RenunganController::class, 'index'])
     ->middleware(['auth'])
     ->name('renungan');
 
+    Route::get('/renungan/{renungan}/edit', [RenunganController::class, 'edit'])->middleware(['auth'])->name('renungan.edit');
+    Route::put('/renungan/{renungan}', [RenunganController::class, 'update'])->middleware(['auth'])->name('renungan.update');
+
 // show single renungan
 Route::get('/renungan-harian/{renungan}', [RenunganController::class, 'show'])
     ->middleware(['auth'])
