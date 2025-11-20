@@ -21,7 +21,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        User::firstOrCreate(
+        $admin = User::firstOrCreate(
             ['email' => 'admin@christ.connect'],
             [
                 'name' => 'admin',
@@ -30,5 +30,14 @@ class AppServiceProvider extends ServiceProvider
                 'email_verified_at' => now(),
             ]
         );
+
+        // Pastikan admin punya wallet
+        if (!$admin->wallet()->exists()) {
+            $admin->wallet()->create(['balance' => 50000]);
+        }
+
+        // Force-register middleware alias
+        $router = $this->app['router'];
+        $router->aliasMiddleware('admin', \App\Http\Middleware\EnsureUserIsAdmin::class);
     }
 }

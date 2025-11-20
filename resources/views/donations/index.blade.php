@@ -69,6 +69,12 @@
                         @if (auth()->user()->role === 'admin')
                             <div style="margin-top:1rem;display:flex;gap:.5rem;justify-content:flex-end;">
                                 <a href="{{ route('donations.edit', $donation) }}" class="btn">Kelola</a>
+                                <form method="POST" action="{{ route('donations.destroy', $donation) }}"
+                                      onsubmit="return confirm('Hapus kotak donasi ini?');" style="display:inline;">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn" style="background:#ef4444;color:#fff;">Delete</button>
+                                </form>
                             </div>
                         @endif
                     @endauth

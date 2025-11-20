@@ -76,9 +76,6 @@
                             <ul style="list-style:none;padding:0;">
                                 @foreach($user->badges as $badge)
                                     <li style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.75rem;">
-                                        @if($badge->icon_url)
-                                            <img src="{{ $badge->icon_url }}" alt="{{ $badge->name }}" style="width:40px;height:40px;object-fit:contain;">
-                                        @endif
                                         <div>
                                             <strong>{{ $badge->name }}</strong><br>
                                             <small>Minimum donasi: Rp{{ number_format($badge->min_donation, 0, ',', '.') }}</small>
