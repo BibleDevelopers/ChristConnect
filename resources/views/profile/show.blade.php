@@ -19,7 +19,11 @@
         {{-- Flash messages / validation errors --}}
         @if(session('status'))
             <div class="dashboard-card" role="status" style="background:#e6ffed;border-left:4px solid #5cb85c;color:#1e4620;">
-                {{ session('status') }}
+                @if(session('status') === 'verification-link-sent')
+                    Link verifikasi telah dikirim ke email Anda. Silakan cek inbox (atau folder spam).
+                @else
+                    {{ session('status') }}
+                @endif
             </div>
         @endif
 
@@ -49,17 +53,13 @@
                             <input type="text" value="{{ $user->email }}" disabled style="width:100%;">
                         </div>
                         <div class="form-group">
-                            <label>Email Terverifikasi</label>
-                            <input type="text" value="{{ $user->hasVerifiedEmail() ? 'Ya' : 'Belum' }}" disabled style="width:100%;">
-                        </div>
-                        <div class="form-group">
                                 <label>Bergabung Sejak</label>
                                 <input type="text" value="{{ $user->created_at->format('d M Y') }}" disabled style="width:100%;">
                         </div>
                             <div id="profile-actions" style="display:none;margin-top:.5rem;display:flex;justify-content:flex-end;gap:.5rem;">
                                 <button type="submit" id="save-name-btn" class="btn btn-primary">Simpan</button>
                                 <button type="button" id="cancel-edit-btn" class="btn" style="background:#6c757d;color:#fff;">Batal</button>
-                            </div>
+                            </div> 
                         </form>
 
                         <hr style="margin:1rem 0;">
@@ -88,13 +88,6 @@
                             </ul>
                         @endif
                         <hr style="margin:1.5rem 0;">
-                        <div class="dashboard-card" style="margin-top:1rem;padding:1.5rem 1rem;">
-                            <h3 style="margin-bottom:.5rem;font-size:1.1rem;text-align:center;">Two-Factor Authentication (2FA)</h3>
-                            <p style="color:#666;margin-bottom:.75rem;text-align:center;">Aktifkan 2FA untuk menambahkan lapisan keamanan pada akun Anda.</p>
-                            <div style="display:flex;justify-content:center;gap:.5rem;">
-                                <button class="btn btn-success">Aktifkan 2FA</button>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>

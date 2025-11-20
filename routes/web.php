@@ -33,6 +33,11 @@ Route::post('register', [App\Http\Controllers\RegisterController::class, '__invo
 ->name('register.attempt')
 ->middleware('throttle:5,1');
 
+// Verification by 6-digit code (after registration)
+Route::get('verify-code', [App\Http\Controllers\VerificationController::class, 'show'])->name('verification.code.show');
+Route::post('verify-code', [App\Http\Controllers\VerificationController::class, 'verify'])->name('verification.code.verify');
+Route::post('verify-resend', [App\Http\Controllers\VerificationController::class, 'resend'])->name('verification.code.resend');
+
 //Logout
 Route::post('logout', function () {
     Auth::guard('web')->logout();

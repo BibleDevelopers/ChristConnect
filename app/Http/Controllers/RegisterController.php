@@ -42,10 +42,16 @@ class RegisterController extends Controller
             'description' => 'Saldo awal pendaftaran'
         ]);
 
-        event(new Registered($user));
+        // generate 6-digit verification code and send via email
+        $code = (string) random_int(100000, 999999);
+        $user->email_verification_code = $code;
+        $user->email_verification_expires_at = now()->addMinutes(15);
+        $user->save();
 
-        Auth::login($user);
-        return redirect()->route('login.attempt');
-        // return redirect()->route('verification.notice');
+        // send verification code email
+        \Illuminate\Support\Facades\Mail::to($user->email)->send(new \App\Mail\EmailVerificationCode($code, $user->name));
+
+        // redirect user to the verification code form (do not auto-login)
+        return redirect()->route('verification.code.show', ['email' => $user->email])->with('status', 'verification-code-sent');
     }
 }
