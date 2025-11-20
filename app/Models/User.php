@@ -70,7 +70,7 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         static::created(function (User $user) {
             if (! $user->wallet()->exists()) {
-                $user->wallet()->create(['balance' => 50000]);
+                $user->wallet()->create(['balance' => 0]);
             }
         });
     }

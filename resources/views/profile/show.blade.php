@@ -94,6 +94,14 @@
                     <h2 style="width:100%;text-align:center;">Keamanan</h2>
                     <div style="width:100%;max-width:560px;">
                         <h3 style="margin-top:0.5rem;margin-bottom:.75rem;font-size:1rem;">Ganti Password</h3>
+                        <div style="background:#f0f9ff;padding:.75rem;border-radius:6px;margin-bottom:1rem;border-left:4px solid #0ea5e9;">
+                            <p style="margin:0;font-size:.9rem;color:#0c4a6e;">
+                                <strong>Syarat Password Baru:</strong><br>
+                                • Minimal 8 karakter<br>
+                                • Mengandung huruf besar dan kecil<br>
+                                • Mengandung angka
+                            </p>
+                        </div>
                         <form action="/profile/change-password" method="POST">
                             @csrf
                             <div class="form-group">

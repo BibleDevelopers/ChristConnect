@@ -33,7 +33,7 @@ class AppServiceProvider extends ServiceProvider
 
         // Pastikan admin punya wallet
         if (!$admin->wallet()->exists()) {
-            $admin->wallet()->create(['balance' => 50000]);
+            $admin->wallet()->create(['balance' => 0]);
         }
 
         // Force-register middleware alias

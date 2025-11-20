@@ -8,8 +8,6 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\Auth\Events\Registered;
-use App\Models\Wallet;
-use App\Models\Transaction;
 
 class RegisterController extends Controller
 {
@@ -19,6 +17,17 @@ class RegisterController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'confirmed', Password::min(8)->mixedCase()->numbers()],
+        ], [
+            'name.required' => 'Nama wajib diisi.',
+            'name.max' => 'Nama maksimal 255 karakter.',
+            'email.required' => 'Email wajib diisi.',
+            'email.email' => 'Format email tidak valid. Contoh: nama@domain.com',
+            'email.unique' => 'Email sudah terdaftar. Silakan gunakan email lain atau login.',
+            'password.required' => 'Password wajib diisi.',
+            'password.confirmed' => 'Konfirmasi password tidak cocok.',
+            'password.min' => 'Password minimal 8 karakter.',
+            'password.mixed_case' => 'Password harus mengandung huruf besar dan kecil.',
+            'password.numbers' => 'Password harus mengandung angka.',
         ]);
 
         $user = User::create([
@@ -27,20 +36,7 @@ class RegisterController extends Controller
             'password' => Hash::make($request->password),
         ]);
         
-        $initialBalance = 50000; // Tentukan saldo awal
-
-        // 1. Buatkan dia Wallet
-        $user->wallet()->create([
-            'balance' => $initialBalance
-        ]);
-
-        // 2. Catat di Transaction
-        $user->transactions()->create([
-            'user_id' => $user->id, // Pastikan user_id ada di model Transaction
-            'type' => 'initial_balance',
-            'amount' => $initialBalance, // Positif karena uang masuk
-            'description' => 'Saldo awal pendaftaran'
-        ]);
+        // Wallet dengan saldo 0 sudah otomatis dibuat oleh User::booted()
 
         // generate 6-digit verification code and send via email
         $code = (string) random_int(100000, 999999);
@@ -48,10 +44,15 @@ class RegisterController extends Controller
         $user->email_verification_expires_at = now()->addMinutes(15);
         $user->save();
 
+<<<<<<< HEAD
         // send verification code email
         \Illuminate\Support\Facades\Mail::to($user->email)->send(new \App\Mail\EmailVerificationCode($code, $user->name));
 
         // redirect user to the verification code form (do not auto-login)
         return redirect()->route('verification.code.show', ['email' => $user->email])->with('status', 'verification-code-sent');
+=======
+        Auth::login($user);
+        return redirect()->route('login.attempt');
+>>>>>>> a0cecfdbe4f1a246c4ab2b321bd9abdaa9a469c9
     }
 }
