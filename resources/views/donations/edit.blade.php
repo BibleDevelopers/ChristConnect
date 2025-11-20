@@ -1,6 +1,6 @@
 <x-app class="donations-page">
-    <div class="container mt-5">
-        <h1>Edit Donation Box</h1>
+    <div class="donations-wrapper">
+        <h1>Edit Donation</h1>
 
         <form action="{{ route('donations.update', $donation) }}" method="POST">
             @csrf

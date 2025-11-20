@@ -1,8 +1,7 @@
-<x-app>
+<x-app class="wallet-background">
     <style>
-        body { background:#fff !important; }
         .wallet-container { max-width:900px;margin:2rem auto;padding:1.5rem; }
-        .wallet-balance { background:#f7f9ff;padding:2rem;border-radius:12px;text-align:center;margin-bottom:2rem;border:1px solid #e0e0e0; }
+    .wallet-balance { background:#f7f9ff;padding:2rem;border-radius:12px;text-align:center;margin-bottom:2rem;border:1px solid #e0e0e0; }
         .wallet-balance h2 { margin:0;font-size:2.5rem;color:#2563eb; }
         .wallet-actions { display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:2rem; }
         .wallet-card { background:#fff;padding:1.5rem;border:1px solid #e5e7eb;border-radius:12px; }
@@ -33,13 +32,13 @@
         @endif
 
         <div class="wallet-balance">
-            <p style="margin:0;color:#666;font-size:0.9rem;">Saldo Saat Ini</p>
+            <p style="margin:0;color:#666;font-size:0.9rem;">Current Balance</p>
             <h2>Rp{{ number_format(optional($user->wallet)->balance ?? 0, 0, ',', '.') }}</h2>
         </div>
 
         <div class="wallet-actions">
             <div class="wallet-card">
-                <h3>Top-up Saldo</h3>
+                <h3>Add Funds</h3>
                 <form method="POST" action="{{ route('wallet.topup') }}">
                     @csrf
                     <input type="number" name="amount" min="10000" max="10000000" step="1000" 
@@ -49,12 +48,12 @@
                             {{ $errors->topup->first('amount') }}
                         </div>
                     @endif
-                    <button type="submit" class="btn-topup">Top-up Sekarang</button>
+                    <button type="submit" class="btn-topup">Add Funds Now</button>
                 </form>
             </div>
 
             <div class="wallet-card">
-                <h3>Tarik Saldo</h3>
+                <h3>Withdraw Funds</h3>
                 <form method="POST" action="{{ route('wallet.withdraw') }}">
                     @csrf
                     <input type="number" name="amount" min="10000" step="1000" 
@@ -64,8 +63,8 @@
                             {{ $errors->withdraw->first('amount') }}
                         </div>
                     @endif
-                    <button type="submit" class="btn-withdraw" onclick="return confirm('Yakin ingin menarik saldo?')">
-                        Tarik Saldo
+                    <button type="submit" class="btn-withdraw" onclick="return confirm('Are you sure you want to withdraw funds?')">
+                        Withdraw
                     </button>
                 </form>
             </div>
@@ -86,7 +85,7 @@
                     </div>
                 </div>
             @empty
-                <p style="color:#666;text-align:center;padding:2rem 0;">Belum ada transaksi.</p>
+                <p style="color:#666;text-align:center;padding:2rem 0;">No transactions yet.</p>
             @endforelse
 
             <div style="margin-top:1rem;">
