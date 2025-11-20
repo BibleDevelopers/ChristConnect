@@ -1,48 +1,212 @@
-<x-app>
-    <style>
-        body {
-            background-image: none !important;
-            background-color: #fff;
-        }
-    </style>
-
-    <section style="max-width:600px;margin:2rem auto;">
-        <h1>Profil Saya</h1>
-
-        <div style="margin-bottom:1.5rem;">
-            <h3>Informasi Akun</h3>
-            <p><strong>Nama:</strong> {{ $user->name }}</p>
-            <p><strong>Email:</strong> {{ $user->email }}</p>
-            <p><strong>Email Terverifikasi:</strong> {{ $user->hasVerifiedEmail() ? 'Ya' : 'Belum' }}</p>
-            <p><strong>Bergabung Sejak:</strong> {{ $user->created_at->format('d M Y') }}</p>
+<x-app class="dashboard-background">
+    <div class="dashboard-container">
+        <div class="dashboard-card" style="padding:1rem 1rem 0 1rem; margin-bottom:1rem;">
+            <div class="profile-header" style="display:flex;align-items:center;gap:1rem;">
+                <div class="avatar" style="width:84px;height:84px;border-radius:50%;background:#f3f4f6;display:flex;align-items:center;justify-content:center;font-weight:700;color:#555;font-size:1.25rem;">
+                    {{ strtoupper(substr($user->name,0,1)) }}
+                </div>
+                <div>
+                    <h1 style="margin:0;font-size:1.5rem;">{{ $user->name }}</h1>
+                    <p style="margin:.25rem 0 0 0;color:#666;">{{ $user->email }}</p>
+                </div>
+                <div style="margin-left:auto;display:flex;gap:.5rem;align-items:center;">
+                    <button id="edit-profile-btn" class="btn" style="padding:.4rem .8rem;background:#6c757d;color:#fff;">Edit Profile</button>
+                    <button id="change-password-btn" class="btn btn-primary" style="padding:.4rem .8rem;">Change Password</button>
+                </div>
+            </div>
         </div>
 
-        <div style="margin-bottom:1.5rem;padding:1rem;border:1px solid #ddd;border-radius:8px;background:#f9f9f9;">
-            <h3>Wallet Saya</h3>
-            @php($balance = optional($user->wallet)->balance ?? 0)
-            <p><strong>Saldo:</strong> Rp{{ number_format($balance, 0, ',', '.') }}</p>
-            <p><strong>Total Donasi:</strong> Rp{{ number_format($user->total_donated ?? 0, 0, ',', '.') }}</p>
-        </div>
+        {{-- Flash messages / validation errors --}}
+        @if(session('status'))
+            <div class="dashboard-card" role="status" style="background:#e6ffed;border-left:4px solid #5cb85c;color:#1e4620;">
+                {{ session('status') }}
+            </div>
+        @endif
 
-        <div>
-            <h3>Lencana (Badges)</h3>
-            @if($user->badges->isEmpty())
-                <p>Belum ada badge. Silakan lanjutkan donasi untuk membuka badge.</p>
-            @else
-                <ul style="list-style:none;padding:0;">
-                    @foreach($user->badges as $badge)
-                        <li style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.75rem;">
-                            @if($badge->icon_url)
-                                <img src="{{ $badge->icon_url }}" alt="{{ $badge->name }}" style="width:40px;height:40px;object-fit:contain;">
-                            @endif
-                            <div>
-                                <strong>{{ $badge->name }}</strong><br>
-                                <small>Minimum donasi: Rp{{ number_format($badge->min_donation, 0, ',', '.') }}</small>
-                            </div>
-                        </li>
+        @if($errors->any())
+            <div class="dashboard-card" style="background:#fff4f4;border-left:4px solid #ff6b6b;color:#5a2121;">
+                <ul style="margin:0;padding-left:1.2rem;">
+                    @foreach($errors->all() as $error)
+                        <li>{{ $error }}</li>
                     @endforeach
                 </ul>
-            @endif
+            </div>
+        @endif
+
+        <div class="profile-grid" style="display:grid;grid-template-columns:1fr;gap:20px;justify-items:center;">
+            <div id="info-card" class="dashboard-card" style="width:100%;max-width:720px;">
+                <div style="display:flex;flex-direction:column;align-items:center;">
+                    <h2 style="width:100%;text-align:center;">Informasi Akun</h2>
+                    <div style="width:100%;max-width:560px;">
+                        <div class="form-group">
+                            <label>Nama</label>
+                            <input type="text" value="{{ $user->name }}" disabled style="width:100%;">
+                        </div>
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="text" value="{{ $user->email }}" disabled style="width:100%;">
+                        </div>
+                        <div class="form-group">
+                            <label>Email Terverifikasi</label>
+                            <input type="text" value="{{ $user->hasVerifiedEmail() ? 'Ya' : 'Belum' }}" disabled style="width:100%;">
+                        </div>
+                        <div class="form-group">
+                            <label>Bergabung Sejak</label>
+                            <input type="text" value="{{ $user->created_at->format('d M Y') }}" disabled style="width:100%;">
+                        </div>
+
+                        <hr style="margin:1rem 0;">
+                        <h3>Wallet Saya</h3>
+                        @php($balance = optional($user->wallet)->balance ?? 0)
+                        <p><strong>Saldo:</strong> Rp{{ number_format($balance, 0, ',', '.') }}</p>
+                        <p><strong>Total Donasi:</strong> Rp{{ number_format($user->total_donated ?? 0, 0, ',', '.') }}</p>
+
+                        <hr style="margin:1rem 0;">
+                        <h3>Lencana (Badges)</h3>
+                        @if($user->badges->isEmpty())
+                            <p>Belum ada badge. Silakan lanjutkan donasi untuk membuka badge.</p>
+                        @else
+                            <ul style="list-style:none;padding:0;">
+                                @foreach($user->badges as $badge)
+                                    <li style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.75rem;">
+                                        @if($badge->icon_url)
+                                            <img src="{{ $badge->icon_url }}" alt="{{ $badge->name }}" style="width:40px;height:40px;object-fit:contain;">
+                                        @endif
+                                        <div>
+                                            <strong>{{ $badge->name }}</strong><br>
+                                            <small>Minimum donasi: Rp{{ number_format($badge->min_donation, 0, ',', '.') }}</small>
+                                        </div>
+                                    </li>
+                                @endforeach
+                            </ul>
+                        @endif
+                    </div>
+                </div>
+            </div>
+
+            <div id="security-card" class="dashboard-card" style="display:none;width:100%;max-width:720px;">
+                <div style="display:flex;flex-direction:column;align-items:center;">
+                    <h2 style="width:100%;text-align:center;">Keamanan</h2>
+                    <div style="width:100%;max-width:560px;">
+                        <h3 style="margin-top:0.5rem;margin-bottom:.75rem;font-size:1rem;">Ganti Password</h3>
+                        <form action="#" method="POST">
+                            @csrf
+                            <div class="form-group">
+                                <label for="current_password">Password Saat Ini</label>
+                                <input type="password" name="current_password" id="current_password" required style="width:100%;">
+                            </div>
+                            <div class="form-group">
+                                <label for="new_password">Password Baru</label>
+                                <input type="password" name="new_password" id="new_password" required style="width:100%;">
+                            </div>
+                            <div class="form-group">
+                                <label for="new_password_confirmation">Konfirmasi Password Baru</label>
+                                <input type="password" name="new_password_confirmation" id="new_password_confirmation" required style="width:100%;">
+                            </div>
+                            <div style="display:flex;gap:.5rem;justify-content:flex-end;margin-top:.5rem;">
+                                <button type="submit" class="btn btn-primary">Ganti Password</button>
+                                <a href="#" id="cancel-security-btn" class="btn btn-success" style="background:#6c757d;">Batalkan</a>
+                            </div>
+                        </form>
+
+                        <hr style="margin:1rem 0;">
+                        <h3 style="margin-bottom:.5rem;font-size:1rem;">Two-Factor Authentication</h3>
+                        <p style="color:#666;margin-bottom:.75rem;">Aktifkan 2FA untuk menambahkan lapisan keamanan pada akun Anda.</p>
+                        <div style="display:flex;gap:.5rem;">
+                            <button class="btn btn-success">Aktifkan 2FA</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-    </section>
+    </div>
 </x-app>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+    const changeBtn = document.getElementById('change-password-btn');
+    const editBtn = document.getElementById('edit-profile-btn');
+    const cancelSecurityBtn = document.getElementById('cancel-security-btn');
+        const securityCard = document.getElementById('security-card');
+        const infoCard = document.getElementById('info-card');
+
+        // initialize: info is visible, so Edit should be gray/disabled, Change is blue/enabled
+        if (editBtn) {
+            editBtn.disabled = true;
+            editBtn.classList.remove('btn-primary');
+            editBtn.style.background = '#6c757d';
+            editBtn.style.color = '#fff';
+        }
+        if (changeBtn) {
+            changeBtn.disabled = false;
+            changeBtn.classList.add('btn-primary');
+            changeBtn.style.background = '';
+            changeBtn.style.color = '';
+        }
+
+        if (changeBtn) {
+            changeBtn.addEventListener('click', function (e) {
+                e.preventDefault();
+                if (!securityCard || !infoCard) return;
+                // show security, hide info
+                securityCard.style.display = 'block';
+                infoCard.style.display = 'none';
+                // disable and gray out change button; enable edit as blue
+                changeBtn.disabled = true;
+                changeBtn.classList.remove('btn-primary');
+                changeBtn.style.background = '#6c757d';
+                changeBtn.style.color = '#fff';
+                if (editBtn) {
+                    editBtn.disabled = false;
+                    editBtn.classList.add('btn-primary');
+                    editBtn.style.background = '';
+                    editBtn.style.color = '';
+                }
+            });
+        }
+
+        if (cancelSecurityBtn) {
+            cancelSecurityBtn.addEventListener('click', function (e) {
+                e.preventDefault();
+                if (!securityCard || !infoCard) return;
+                // hide security, show info
+                securityCard.style.display = 'none';
+                infoCard.style.display = 'block';
+                // enable and highlight change button, and disable edit
+                if (changeBtn) {
+                    changeBtn.disabled = false;
+                    changeBtn.classList.add('btn-primary');
+                    changeBtn.style.background = '';
+                    changeBtn.style.color = '';
+                }
+                if (editBtn) {
+                    editBtn.disabled = true;
+                    editBtn.classList.remove('btn-primary');
+                    editBtn.style.background = '#6c757d';
+                    editBtn.style.color = '#fff';
+                }
+            });
+        }
+
+        if (editBtn) {
+            editBtn.addEventListener('click', function (e) {
+                e.preventDefault();
+                if (!securityCard || !infoCard) return;
+                // show info, hide security
+                securityCard.style.display = 'none';
+                infoCard.style.display = 'block';
+                // disable and gray out edit button; enable change button as blue
+                editBtn.disabled = true;
+                editBtn.classList.remove('btn-primary');
+                editBtn.style.background = '#6c757d';
+                editBtn.style.color = '#fff';
+                if (changeBtn) {
+                    changeBtn.disabled = false;
+                    changeBtn.classList.add('btn-primary');
+                    changeBtn.style.background = '';
+                    changeBtn.style.color = '';
+                }
+            });
+        }
+    });
+</script>
