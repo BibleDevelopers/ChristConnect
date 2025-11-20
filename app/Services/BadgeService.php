@@ -34,6 +34,8 @@ class BadgeService
     {
         $total = $user->total_donated ?? 0;
 
+        // Temukan badge tertinggi yang user qualify
+        $highestBadge = null;
         foreach (self::BADGES as $data) {
             $badge = Badge::firstOrCreate(
                 ['name' => $data['name']],
@@ -41,8 +43,23 @@ class BadgeService
             );
 
             if ($total >= $badge->min_donation) {
-                $user->badges()->syncWithoutDetaching([$badge->id]);
+                $highestBadge = $badge;
             }
+        }
+
+        // Lepas semua badge donor lama
+        $user->badges()->detach(
+            Badge::whereIn('name', [
+                'Bronze Donor',
+                'Silver Donor',
+                'Gold Donor',
+                'Platinum Donor',
+            ])->pluck('id')
+        );
+
+        // Attach hanya badge tertinggi
+        if ($highestBadge) {
+            $user->badges()->attach($highestBadge->id);
         }
     }
 }
