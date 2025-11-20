@@ -54,6 +54,9 @@ Route::get('/renungan', [RenunganController::class, 'index'])
     ->middleware(['auth'])
     ->name('renungan');
 
+    Route::get('/renungan/{renungan}/edit', [RenunganController::class, 'edit'])->middleware(['auth'])->name('renungan.edit');
+    Route::put('/renungan/{renungan}', [RenunganController::class, 'update'])->middleware(['auth'])->name('renungan.update');
+
 // show single renungan
 Route::get('/renungan-harian/{renungan}', [RenunganController::class, 'show'])
     ->middleware(['auth'])
@@ -83,13 +86,16 @@ Route::delete('/renungan-harian/{renungan}/comment/{comment}', [RenunganControll
 Route::middleware(['auth'])->group(function () {
     Route::get('/donations', [DonationController::class, 'index'])->name('donations.index');
     Route::get('/profile', function () {
-        $user = Auth::user()->load('badges', 'wallet');
+        $user = Auth::user()->refresh()->load('badges', 'wallet');
         return view('profile.show', compact('user'));
     })->name('profile');
 
     Route::get('/wallet', [\App\Http\Controllers\WalletController::class, 'index'])->name('wallet.index');
     Route::post('/wallet/topup', [\App\Http\Controllers\WalletController::class, 'topup'])->name('wallet.topup');
     Route::post('/wallet/withdraw', [\App\Http\Controllers\WalletController::class, 'withdraw'])->name('wallet.withdraw');
+
+    Route::post('/profile/update-name', [App\Http\Controllers\ProfileController::class, 'updateName'])->name('profile.updateName');
+    Route::post('/profile/change-password', [App\Http\Controllers\ProfileController::class, 'changePassword'])->name('profile.changePassword');
 
     Route::get('/donations/create', [DonationController::class, 'create'])->name('donations.create');
     Route::post('/donations', [DonationController::class, 'store'])->name('donations.store');

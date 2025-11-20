@@ -92,4 +92,35 @@ class RenunganController extends Controller
 
         return back()->with('success', 'Komentar dihapus.');
     }
+
+    public function edit(Renungan $renungan)
+    {
+        $user = Auth::user();
+        if ($user->id !== $renungan->user_id && $user->role !== 'admin') {
+            abort(403);
+        }
+
+        return view('renungan.edit', compact('renungan'));
+    }
+
+    public function update(Request $request, Renungan $renungan)
+    {
+        $user = Auth::user();
+        if ($user->id !== $renungan->user_id && $user->role !== 'admin') {
+            abort(403);
+        }
+
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'content' => 'required|string|max:5000',
+        ]);
+
+        $cleanContent = strip_tags($request->content, '<p><br><strong><em><ul><ol><li><a>');
+
+        $renungan->title = $request->title;
+        $renungan->content = $cleanContent;
+        $renungan->save();
+
+        return redirect()->route('renungan.show', $renungan)->with('success', 'Renungan diperbarui.');
+    }
 }
