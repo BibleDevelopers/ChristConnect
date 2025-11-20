@@ -25,7 +25,6 @@ class Kernel extends HttpKernel
         \App\Http\Middleware\VerifyCsrfToken::class,
         \Illuminate\View\Middleware\ShareViewErrors::class,
         \App\Http\Middleware\RedirectIfAuthenticated::class,
-        \App\Http\Middleware\EnsureUserIsAdmin::class, // Registering the new middleware here
     ];
 
     /**

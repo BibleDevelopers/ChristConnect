@@ -27,7 +27,9 @@
             @csrf
             <div class="form-group">
                 <label for="email">Email</label>
-                <input id="email" name="email" type="email" value="{{ old('email', $email) }}" required style="width:100%;">
+                {{-- show email as read-only and submit it via a hidden input so it can't be changed by the user --}}
+                <input type="hidden" name="email" value="{{ old('email', $email) }}">
+                <input id="email_display" type="text" value="{{ old('email', $email) }}" disabled style="width:100%;background:#f5f5f5;">
             </div>
 
             <div class="form-group">
@@ -37,13 +39,15 @@
 
             <div style="display:flex;gap:.5rem;justify-content:space-between;align-items:center;margin-top:.75rem;">
                 <div>
-                    <button type="submit" class="btn btn-primary">Kirim</button>
+                    <!-- primary action: confirm the entered 6-digit code -->
+                    <button type="submit" class="btn btn-primary">Confirm</button>
                 </div>
                 <div>
+                    <!-- secondary action: request the server to send (or resend) the 6-digit code -->
                     <form method="POST" action="{{ route('verification.code.resend') }}" style="display:inline;">
                         @csrf
                         <input type="hidden" name="email" value="{{ old('email', $email) }}">
-                        <button type="submit" class="btn">Kirim Ulang Kode</button>
+                        <button type="submit" class="btn">Kirim</button>
                     </form>
                 </div>
             </div>

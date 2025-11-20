@@ -157,6 +157,17 @@ class DonationController extends Controller
         return redirect()->route('donations.index')->with('success', 'Donation updated.');
     }
     
+    public function destroy(Donation $donation)
+    {
+        if (Auth::user()->role !== 'admin') {
+            return redirect()->route('donations.index')->with('error', 'Unauthorized');
+        }
+
+        $donation->delete();
+
+        return redirect()->route('donations.index')->with('success', 'Donation box deleted.');
+    }
+     
     private function checkAndAwardBadges(User $user)
     {
         // 1. Hitung total donasi (ambil nilai absolut dari jumlah negatif)
