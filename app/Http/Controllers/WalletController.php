@@ -14,7 +14,7 @@ class WalletController extends Controller
         
         // Auto-create wallet if missing
         if (!$user->wallet) {
-            $user->wallet()->create(['balance' => 50000]);
+            $user->wallet()->create(['balance' => 0]);
             $user->load('wallet');
         }
         
