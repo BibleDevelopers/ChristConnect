@@ -5,6 +5,7 @@ use App\Http\Controllers\LoginController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DonationController;
 use App\Http\Controllers\RenunganController;
+use App\Http\Controllers\Admin\UserManagementController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Route;
@@ -21,8 +22,8 @@ Route::get('login', function () {
 })->name('login');
 
 Route::post('login', [LoginController::class, 'login'])
-->name('login.attempt')
-->middleware('throttle:5,1');
+    ->name('login.attempt')
+    ->middleware('throttle:5,1'); // max 5 attempts per minute
 
 //Register Page
 Route::get('register', function (){
@@ -86,10 +87,21 @@ Route::middleware(['auth'])->group(function () {
         return view('profile.show', compact('user'));
     })->name('profile');
 
+    Route::get('/wallet', [\App\Http\Controllers\WalletController::class, 'index'])->name('wallet.index');
+    Route::post('/wallet/topup', [\App\Http\Controllers\WalletController::class, 'topup'])->name('wallet.topup');
+    Route::post('/wallet/withdraw', [\App\Http\Controllers\WalletController::class, 'withdraw'])->name('wallet.withdraw');
+
     Route::get('/donations/create', [DonationController::class, 'create'])->name('donations.create');
     Route::post('/donations', [DonationController::class, 'store'])->name('donations.store');
     Route::get('/donations/{donation}/edit', [DonationController::class, 'edit'])->name('donations.edit');
     Route::put('/donations/{donation}', [DonationController::class, 'update'])->name('donations.update');
+    Route::delete('/donations/{donation}', [DonationController::class, 'destroy'])->name('donations.destroy');
+
+    Route::prefix('admin')->name('admin.')->middleware('admin')->group(function () {
+        Route::get('/users', [UserManagementController::class, 'index'])->name('users.index');
+        Route::delete('/users/{user}', [UserManagementController::class, 'destroy'])->name('users.destroy');
+        Route::get('/transactions', [\App\Http\Controllers\Admin\TransactionManagementController::class, 'index'])->name('transactions.index');
+    });
 });
 
 // Clicking on donate button

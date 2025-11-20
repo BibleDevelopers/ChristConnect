@@ -45,8 +45,14 @@
 
                         @auth
                             @if (auth()->user()->role === 'admin')
-                                <div class="mt-2">
+                                <div class="mt-2 d-flex gap-2">
                                     <a href="{{ route('donations.edit', $donation) }}" class="manage-btn">Manage</a>
+                                    <form method="POST" action="{{ route('donations.destroy', $donation) }}"
+                                          onsubmit="return confirm('Hapus kotak donasi ini?');">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-danger">Delete</button>
+                                    </form>
                                 </div>
                             @endif
                         @endauth

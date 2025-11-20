@@ -17,6 +17,8 @@
     @vite(['resources/js/app.js'])
 </head>
 
+@php($isAdmin = auth()->check() && auth()->user()->role === 'admin')
+
 <body class="{{ Route::currentRouteName() }} {{ $attributes['class'] ?? '' }}">
     <header>
         <div class="logo">
@@ -29,6 +31,13 @@
             <a href="{{ route('alkitab') }}">Alkitab</a> |
             <a href="{{ route('renungan') }}">Renungan Harian</a> |
             <a href="{{ route('donations.index') }}">Donasi</a>
+            @auth
+                | <a href="{{ route('wallet.index') }}">Wallet</a>
+            @endauth
+            @if($isAdmin)
+                | <a href="{{ route('admin.users.index') }}">Manage Users</a>
+                | <a href="{{ route('admin.transactions.index') }}">Manage Transactions</a>
+            @endif
         </nav>
 
         <div class="auth-links">
