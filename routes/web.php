@@ -4,6 +4,7 @@ use App\Http\Controllers\AlkitabController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DonationController;
+use App\Http\Controllers\RenunganController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Route;
@@ -48,10 +49,43 @@ Route::get('/dashboard', [DashboardController::class, 'index'])
     ->middleware(['auth'])
     ->name('dashboard');
 
+Route::get('/renungan', [RenunganController::class, 'index'])
+    ->middleware(['auth'])
+    ->name('renungan');
+
+// show single renungan
+Route::get('/renungan-harian/{renungan}', [RenunganController::class, 'show'])
+    ->middleware(['auth'])
+    ->name('renungan.show');
+
+// store new renungan (post) — batasi rate untuk mencegah spam
+Route::post('/renungan-harian', [RenunganController::class, 'store'])
+    ->middleware(['auth', 'throttle:10,1']) // max 10 requests per minute per user/ip
+    ->name('renungan.store');
+
+// add comment to renungan — batasi juga
+Route::post('/renungan-harian/{renungan}/comment', [RenunganController::class, 'comment'])
+    ->middleware(['auth', 'throttle:20,1']) // max 20 comments per minute
+    ->name('renungan.comment');
+
+Route::delete('/renungan-harian/{renungan}', [RenunganController::class, 'destroy'])
+    ->middleware('auth')
+    ->name('renungan.destroy');
+
+Route::delete('/renungan-harian/{renungan}/comment/{comment}', [RenunganController::class, 'destroyComment'])
+    ->middleware('auth')
+    ->name('renungan.comment.destroy');
+
 
 //Donation
+
 Route::middleware(['auth'])->group(function () {
     Route::get('/donations', [DonationController::class, 'index'])->name('donations.index');
+    Route::get('/profile', function () {
+        $user = Auth::user()->load('badges', 'wallet');
+        return view('profile.show', compact('user'));
+    })->name('profile');
+
     Route::get('/donations/create', [DonationController::class, 'create'])->name('donations.create');
     Route::post('/donations', [DonationController::class, 'store'])->name('donations.store');
     Route::get('/donations/{donation}/edit', [DonationController::class, 'edit'])->name('donations.edit');

@@ -23,7 +23,9 @@ class User extends Authenticatable implements MustVerifyEmail
     protected $fillable = [
         'name',
         'email',
-        'password', // kgk usah nambahin wallet karena dibuat di tabel wallet
+        'password',
+        'role',
+        'total_donated',
     ];
 
     /**
@@ -46,6 +48,7 @@ class User extends Authenticatable implements MustVerifyEmail
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'total_donated' => 'int',
         ];
     }
     public function wallet()
@@ -61,5 +64,14 @@ class User extends Authenticatable implements MustVerifyEmail
     public function badges()
     {
         return $this->belongsToMany(Badge::class);
+    }
+
+    protected static function booted()
+    {
+        static::created(function (User $user) {
+            if (! $user->wallet()->exists()) {
+                $user->wallet()->create(['balance' => 50000]);
+            }
+        });
     }
 }

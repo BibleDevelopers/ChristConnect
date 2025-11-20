@@ -5,6 +5,9 @@
         @if (session('success'))
             <div class="alert alert-success">{{ session('success') }}</div>
         @endif
+        @if (session('error'))
+            <div class="alert alert-danger">{{ session('error') }}</div>
+        @endif
 
         @if (Auth::user()->role === 'admin')
             <div class="add-donation-container">
@@ -22,28 +25,22 @@
                         <p><strong>Collected:</strong> {{ number_format($donation->collected_amount, 2) }}</p>
 
                         @if (Auth::user()->role === 'user')
-                            @if ($donation->options->isEmpty())
-                                <form method="POST" action="{{ route('donations.donate', $donation->id) }}">
-                                    @csrf
-                                    <input type="number" name="amount" placeholder="Enter amount" class="form-control mb-2" required>
-                                    <button class="btn btn-success">Donate</button>
-                                </form>
-                            @else
-                                <div class="donation-options">
-                                    <label class="form-label mb-2">Choose your donation amount:</label>
-                                    <div class="donation-option-grid">
-                                        @foreach ($donation->options as $option)
-                                            <form method="POST" action="{{ route('donations.donate', $donation->id) }}" class="donation-form">
-                                                @csrf
-                                                <input type="hidden" name="amount" value="{{ $option->amount }}">
-                                                <button type="submit" class="donation-option-btn">
-                                                    {{ $option->label ? $option->label . ' : ' : '' }}{{ number_format($option->amount, 0) }}
-                                                </button>
-                                            </form>
-                                        @endforeach
-                                    </div>
-                                </div>
-                            @endif
+                            <form method="POST" action="{{ route('donations.donate', $donation->id) }}">
+                                @csrf
+                                <label class="form-label">Masukkan jumlah donasi</label>
+                                <input
+                                    type="number"
+                                    name="amount"
+                                    min="1000"
+                                    max="1000000000"
+                                    inputmode="numeric"
+                                    step="100"
+                                    class="form-control mb-2"
+                                    placeholder="Contoh: 50000"
+                                    required
+                                >
+                                <button class="btn btn-success w-100">Donate</button>
+                            </form>
                         @endif
 
                         @auth
