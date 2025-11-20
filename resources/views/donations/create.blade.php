@@ -20,14 +20,6 @@
                 <input type="number" name="goal_amount" class="form-control" required>
             </div>
 
-            <div class="mb-3">
-                <label class="form-label">Price options (one per line)</label>
-                <small class="form-text text-muted">Format each line as either <code>Label|amount</code> or just <code>amount</code> (e.g. "Supporter|10" or "25").</small>
-                <textarea name="options" class="form-control" rows="4" placeholder="Small|5\nMedium|10\nLarge|25"></textarea>
-            </div>
-
-            
-
             <button type="submit" class="btn btn-primary">Create</button>
             <a href="{{ route('donations.index') }}" class="btn btn-secondary">Cancel</a>
         </form>
