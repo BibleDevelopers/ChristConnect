@@ -104,7 +104,7 @@
                     <h2 style="width:100%;text-align:center;">Keamanan</h2>
                     <div style="width:100%;max-width:560px;">
                         <h3 style="margin-top:0.5rem;margin-bottom:.75rem;font-size:1rem;">Ganti Password</h3>
-                        <form action="{{ route('profile.changePassword') }}" method="POST">
+                        <form action="/profile/change-password" method="POST">
                             @csrf
                             <div class="form-group">
                                 <label for="current_password">Password Saat Ini</label>
