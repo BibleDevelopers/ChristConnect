@@ -2,11 +2,9 @@
 
 <!-- HEADER STYLE: CLASSIC -->
 <div align="left">
-
-<img width="1920" height="1920" alt="logoNew" src="https://github.com/user-attachments/assets/c54b18cc-bfe7-4d05-8435-3f5bd04f47de" />
-
-
-# CHRISTCONNECT
+# ChristConnect
+    
+<img width="900" height="900" alt="logoNew" src="https://github.com/user-attachments/assets/c54b18cc-bfe7-4d05-8435-3f5bd04f47de" />
 
 <em>Empowering Faith, Connecting Souls, Inspiring Growth</em>
 
