@@ -2,7 +2,7 @@
 
 <!-- HEADER STYLE: CLASSIC -->
 <div align="left">    
-<img width="700" alt="logoNew" src="https://github.com/user-attachments/assets/c54b18cc-bfe7-4d05-8435-3f5bd04f47de" />
+<img width="400" alt="logoNew" src="https://github.com/user-attachments/assets/c54b18cc-bfe7-4d05-8435-3f5bd04f47de" />
 
 # CHRISTCONNECT
 
