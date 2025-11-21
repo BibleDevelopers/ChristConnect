@@ -8,15 +8,15 @@
                 <option value="kjv">English (KJV)</option>
             </select>
             <select id="book-select">
-                <option value="">Pilih Kitab</option>
+                <option value="">Select Book</option>
                 @foreach ($books as $book)
                     <option value="{{ $book['id'] }}" data-chapters="{{ $book['chapters'] }}">{{ $book['name'] }}</option>
                 @endforeach
             </select>
             <select id="chapter-select" disabled><option value="">Pilih Pasal</option></select>
             <select id="verse-select" disabled><option value="">Pilih Ayat</option></select>
-            <input type="search" id="search-input" placeholder="Cari ayat...">
-            <button id="search-button">Cari</button>
+            <input type="search" id="search-input" placeholder="Search verse...">
+            <button id="search-button">Search</button>
         </div>
 
         <div id="loading-indicator">Loading...</div>

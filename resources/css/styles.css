@@ -36,6 +36,36 @@ body.alkitab-background {
     overflow: auto;
 }
 
+/* Per-page backgrounds */
+body.donations-background {
+    background: url('/resources/images/background1.png') no-repeat center center/cover;
+    min-height: 100vh;
+    color: #000;
+    overflow: auto;
+}
+
+body.wallet-background {
+    background: url('/resources/images/background2.png') no-repeat center center/cover;
+    min-height: 100vh;
+    color: #000;
+    overflow: auto;
+}
+
+/* Admin pages background */
+body.admin-background {
+    background: url('/resources/images/background3.png') no-repeat center center/cover;
+    min-height: 100vh;
+    color: #000;
+    overflow: auto;
+}
+
+/* Donations pages wrapper to keep consistent widths */
+.donations-wrapper {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0 16px;
+}
+
 header {
     display: flex;
     justify-content: space-between;
@@ -226,6 +256,10 @@ nav a {
     max-width: 900px;
     margin: 50px auto;
     padding: 20px;
+}
+.profile-wrapper {
+    max-width: 720px;
+    margin: 0 auto;
 }
 .dashboard-card {
     background-color: #fff;

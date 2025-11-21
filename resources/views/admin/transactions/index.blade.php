@@ -1,6 +1,5 @@
-<x-app>
+<x-app class="admin-background">
     <style>
-        body { background:#fff !important; }
         .admin-transactions-card { max-width:1200px;margin:2rem auto;padding:1.5rem;border:1px solid #e5e7eb;border-radius:12px;background:#fff; }
         .admin-transactions-card table { width:100%;border-collapse:collapse;margin-top:1rem; }
         .admin-transactions-card th, .admin-transactions-card td { padding:0.75rem;border-bottom:1px solid #f0f0f0;text-align:left; }
@@ -11,9 +10,9 @@
         <h1>Manage Transactions</h1>
 
         <form method="get" action="{{ route('admin.transactions.index') }}" style="display:flex;gap:0.5rem;margin-top:1rem;">
-            <input type="text" name="q" value="{{ $search }}" placeholder="Cari berdasarkan email user..."
+            <input type="text" name="q" value="{{ $search }}" placeholder="Search by user email..."
                    style="flex:1;padding:0.5rem;border:1px solid #ccc;border-radius:6px;">
-            <button type="submit" class="btn btn-primary" style="padding:0.5rem 1.25rem;">Cari</button>
+            <button type="submit" class="btn btn-primary" style="padding:0.5rem 1.25rem;">Search</button>
         </form>
 
         <table>
@@ -43,7 +42,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="7">Tidak ada transaksi ditemukan.</td>
+                        <td colspan="7">No transactions found.</td>
                     </tr>
                 @endforelse
             </tbody>

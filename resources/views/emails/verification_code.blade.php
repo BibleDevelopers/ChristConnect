@@ -2,13 +2,13 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Kode Verifikasi</title>
+    <title>Verification Code</title>
 </head>
 <body>
-    <p>Halo {{ $name ?? 'Pengguna' }},</p>
-    <p>Terima kasih telah mendaftar. Gunakan kode verifikasi berikut untuk mengonfirmasi alamat email Anda:</p>
+    <p>Hello {{ $name ?? 'User' }},</p>
+    <p>Thanks for signing up. Use the verification code below to confirm your email address:</p>
     <h2 style="letter-spacing:4px">{{ $code }}</h2>
-    <p>Kode ini berlaku selama 15 menit. Jika Anda tidak meminta kode ini, abaikan email ini.</p>
-    <p>Salam,<br>Tim ChristConnect</p>
+    <p>This code is valid for 15 minutes. If you did not request this code, please ignore this email.</p>
+    <p>Regards,<br>The ChristConnect Team</p>
 </body>
 </html>

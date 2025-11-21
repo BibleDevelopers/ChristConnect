@@ -33,10 +33,10 @@
         @endif
 
         <div class="profile-grid" style="display:grid;grid-template-columns:1fr 380px;gap:20px;">
-            <div class="dashboard-card">
+                <div class="dashboard-card">
                 <h2>Personal Information</h2>
                 <div class="form-group">
-                    <label>Nama</label>
+                    <label>Name</label>
                     <input type="text" value="{{ Auth::user()->name }}" disabled>
                 </div>
                 <div class="form-group">
@@ -47,34 +47,34 @@
             </div>
 
             <div class="dashboard-card">
-                <h2>Keamanan</h2>
+                <h2>Security</h2>
 
-                <h3 style="margin-top:0.5rem;margin-bottom:.75rem;font-size:1rem;">Ganti Password</h3>
+                <h3 style="margin-top:0.5rem;margin-bottom:.75rem;font-size:1rem;">Change Password</h3>
                 <form action="#" method="POST">
                     @csrf
                     <div class="form-group">
-                        <label for="current_password">Password Saat Ini</label>
+                        <label for="current_password">Current Password</label>
                         <input type="password" name="current_password" id="current_password" required>
                     </div>
                     <div class="form-group">
-                        <label for="new_password">Password Baru</label>
+                        <label for="new_password">New Password</label>
                         <input type="password" name="new_password" id="new_password" required>
                     </div>
                     <div class="form-group">
-                        <label for="new_password_confirmation">Konfirmasi Password Baru</label>
+                        <label for="new_password_confirmation">Confirm New Password</label>
                         <input type="password" name="new_password_confirmation" id="new_password_confirmation" required>
                     </div>
-                    <div style="display:flex;gap:.5rem;justify-content:flex-end;margin-top:.5rem;">
-                        <button type="submit" class="btn btn-primary">Ganti Password</button>
-                        <a href="#" class="btn btn-success" style="background:#6c757d;">Batalkan</a>
+                        <div style="display:flex;gap:.5rem;justify-content:flex-end;margin-top:.5rem;">
+                        <button type="submit" class="btn btn-primary">Change Password</button>
+                        <a href="#" class="btn btn-success" style="background:#6c757d;">Cancel</a>
                     </div>
                 </form>
 
                 <hr style="margin:1rem 0;">
                 <h3 style="margin-bottom:.5rem;font-size:1rem;">Two-Factor Authentication</h3>
-                <p style="color:#666;margin-bottom:.75rem;">Aktifkan 2FA untuk menambahkan lapisan keamanan pada akun Anda.</p>
+                <p style="color:#666;margin-bottom:.75rem;">Enable 2FA to add an extra layer of security to your account.</p>
                 <div style="display:flex;gap:.5rem;">
-                    <button class="btn btn-success">Aktifkan 2FA</button>
+                    <button class="btn btn-success">Enable 2FA</button>
                 </div>
             </div>
         </div>

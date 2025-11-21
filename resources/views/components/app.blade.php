@@ -28,9 +28,9 @@
         </div>
 
         <nav class="center-links">
-            <a href="{{ route('alkitab') }}">Alkitab</a> |
-            <a href="{{ route('renungan') }}">Renungan Harian</a> |
-            <a href="{{ route('donations.index') }}">Donasi</a>
+            <a href="{{ route('alkitab') }}">Bible</a> |
+            <a href="{{ route('renungan') }}">Daily Devotional</a> |
+            <a href="{{ route('donations.index') }}">Donations</a>
             @auth
                 | <a href="{{ route('wallet.index') }}">Wallet</a>
             @endauth
@@ -60,13 +60,17 @@
 
     <main>
         @auth
-            @if(Str::startsWith(Route::currentRouteName(), 'donations'))
+                @if(Str::startsWith(Route::currentRouteName(), 'donations'))
                 @php($walletBalance = optional(Auth::user()->wallet)->balance ?? 0)
-                <section style="margin:1rem auto;max-width:900px;padding:1rem;border:1px solid #e0e0e0;border-radius:8px;background:#f7f9ff;">
-                    <strong>Saldo Wallet Anda:</strong>
-                    Rp{{ number_format($walletBalance, 0, ',', '.') }}
-                </section>
-            @endif
+                <div class="dashboard-container">
+                    <div class="donations-wrapper">
+                        <div class="dashboard-card" style="max-width:1000px;margin:0 auto;padding:1.5rem;">
+                            <strong>Your Wallet Balance:</strong>
+                            Rp{{ number_format($walletBalance, 0, ',', '.') }}
+                        </div>
+                    </div>
+                </div>
+                @endif
         @endauth
 
          {{ $slot }}

@@ -1,5 +1,6 @@
 <x-app class="dashboard-background">
     <div class="dashboard-container">
+        <div class="profile-wrapper">
         <div class="dashboard-card" style="padding:1rem 1rem 0 1rem; margin-bottom:1rem;">
             <div class="profile-header" style="display:flex;align-items:center;gap:1rem;">
                 <div class="avatar" style="width:84px;height:84px;border-radius:50%;background:#f3f4f6;display:flex;align-items:center;justify-content:center;font-weight:700;color:#555;font-size:1.25rem;">
@@ -19,12 +20,12 @@
         {{-- Flash messages / validation errors --}}
         @if(session('status'))
             <div class="dashboard-card" role="status" style="background:#e6ffed;border-left:4px solid #5cb85c;color:#1e4620;">
-                @if(session('status') === 'verification-link-sent')
-                    Link verifikasi telah dikirim ke email Anda. Silakan cek inbox (atau folder spam).
-                @else
-                    {{ session('status') }}
-                @endif
-            </div>
+                    @if(session('status') === 'verification-link-sent')
+                        A verification link has been sent to your email. Please check your inbox (or spam folder).
+                    @else
+                        {{ session('status') }}
+                    @endif
+                </div>
         @endif
 
         @if($errors->any())
@@ -38,14 +39,14 @@
         @endif
 
         <div class="profile-grid" style="display:grid;grid-template-columns:1fr;gap:20px;justify-items:center;">
-            <div id="info-card" class="dashboard-card" style="width:100%;max-width:720px;">
+            <div id="info-card" class="dashboard-card" style="width:100%;">
                 <div style="display:flex;flex-direction:column;align-items:center;">
-                    <h2 style="width:100%;text-align:center;">Informasi Akun</h2>
-                    <div style="width:100%;max-width:560px;">
+                    <h2 style="width:100%;text-align:center;">Account Information</h2>
+                    <div style="width:100%;">
                         <form id="name-form" action="{{ route('profile.updateName') }}" method="POST" style="margin-bottom:0;">
                             @csrf
                             <div class="form-group">
-                                <label>Nama</label>
+                                <label>Name</label>
                                 <input id="name-input" name="name" type="text" value="{{ $user->name }}" disabled style="width:100%;">
                             </div>
                         <div class="form-group">
@@ -53,32 +54,45 @@
                             <input type="text" value="{{ $user->email }}" disabled style="width:100%;">
                         </div>
                         <div class="form-group">
-                                <label>Bergabung Sejak</label>
+                                <label>Member Since</label>
                                 <input type="text" value="{{ $user->created_at->format('d M Y') }}" disabled style="width:100%;">
                         </div>
                             <div id="profile-actions" style="display:none;margin-top:.5rem;display:flex;justify-content:flex-end;gap:.5rem;">
-                                <button type="submit" id="save-name-btn" class="btn btn-primary">Simpan</button>
-                                <button type="button" id="cancel-edit-btn" class="btn" style="background:#6c757d;color:#fff;">Batal</button>
+                                <button type="submit" id="save-name-btn" class="btn btn-primary">Save</button>
+                                <button type="button" id="cancel-edit-btn" class="btn" style="background:#6c757d;color:#fff;">Cancel</button>
                             </div> 
                         </form>
 
                         <hr style="margin:1rem 0;">
-                        <h3>Wallet Saya</h3>
+                        <h3>My Wallet</h3>
                         @php($balance = optional($user->wallet)->balance ?? 0)
-                        <p><strong>Saldo:</strong> Rp{{ number_format($balance, 0, ',', '.') }}</p>
-                        <p><strong>Total Donasi:</strong> Rp{{ number_format($user->total_donated ?? 0, 0, ',', '.') }}</p>
+                        <p><strong>Balance:</strong> Rp{{ number_format($balance, 0, ',', '.') }}</p>
+                        <p><strong>Total Donations:</strong> Rp{{ number_format($user->total_donated ?? 0, 0, ',', '.') }}</p>
 
                         <hr style="margin:1rem 0;">
-                        <h3>Lencana (Badges)</h3>
+                        <h3>Badges</h3>
                         @if($user->badges->isEmpty())
-                            <p>Belum ada badge. Silakan lanjutkan donasi untuk membuka badge.</p>
+                            <p>No badges yet. Donate to unlock badges.</p>
                         @else
-                            <ul style="list-style:none;padding:0;">
+                            <ul style="list-style:none;padding:0;display:flex;flex-wrap:wrap;gap:0.75rem;">
                                 @foreach($user->badges as $badge)
+                                        @php($b = strtolower($badge->name ?? ''))
+                                        @if (Str::contains($b, 'bronze'))
+                                            @php($img = Vite::asset('resources/images/bronze.png'))
+                                        @elseif (Str::contains($b, 'silver'))
+                                            @php($img = Vite::asset('resources/images/silver.png'))
+                                        @elseif (Str::contains($b, 'gold'))
+                                            @php($img = Vite::asset('resources/images/gold.png'))
+                                        @elseif (Str::contains($b, 'platinum'))
+                                            @php($img = Vite::asset('resources/images/platinum.png'))
+                                        @else
+                                            @php($img = Vite::asset('resources/images/bronze.png'))
+                                        @endif
                                     <li style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.75rem;">
+                                        <img src="{{ $img }}" alt="{{ $badge->name }} badge" style="width:48px;height:48px;border-radius:6px;background:#fff;border:1px solid #eee;" />
                                         <div>
                                             <strong>{{ $badge->name }}</strong><br>
-                                            <small>Minimum donasi: Rp{{ number_format($badge->min_donation, 0, ',', '.') }}</small>
+                                            <small>Minimum donation: Rp{{ number_format($badge->min_donation, 0, ',', '.') }}</small>
                                         </div>
                                     </li>
                                 @endforeach
@@ -89,41 +103,42 @@
                 </div>
             </div>
 
-            <div id="security-card" class="dashboard-card" style="display:none;width:100%;max-width:720px;">
+            <div id="security-card" class="dashboard-card" style="display:none;width:100%;">
                 <div style="display:flex;flex-direction:column;align-items:center;">
-                    <h2 style="width:100%;text-align:center;">Keamanan</h2>
+                    <h2 style="width:100%;text-align:center;">Security</h2>
                     <div style="width:100%;max-width:560px;">
-                        <h3 style="margin-top:0.5rem;margin-bottom:.75rem;font-size:1rem;">Ganti Password</h3>
+                        <h3 style="margin-top:0.5rem;margin-bottom:.75rem;font-size:1rem;">Change Password</h3>
                         <div style="background:#f0f9ff;padding:.75rem;border-radius:6px;margin-bottom:1rem;border-left:4px solid #0ea5e9;">
                             <p style="margin:0;font-size:.9rem;color:#0c4a6e;">
-                                <strong>Syarat Password Baru:</strong><br>
-                                • Minimal 8 karakter<br>
-                                • Mengandung huruf besar dan kecil<br>
-                                • Mengandung angka
+                                <strong>New Password Requirements:</strong><br>
+                                • At least 8 characters<br>
+                                • Contains upper and lower case letters<br>
+                                • Contains numbers
                             </p>
                         </div>
                         <form action="/profile/change-password" method="POST">
                             @csrf
                             <div class="form-group">
-                                <label for="current_password">Password Saat Ini</label>
+                                <label for="current_password">Current Password</label>
                                 <input type="password" name="current_password" id="current_password" required style="width:100%;">
                             </div>
                             <div class="form-group">
-                                <label for="new_password">Password Baru</label>
+                                <label for="new_password">New Password</label>
                                 <input type="password" name="new_password" id="new_password" required style="width:100%;">
                             </div>
                             <div class="form-group">
-                                <label for="new_password_confirmation">Konfirmasi Password Baru</label>
+                                <label for="new_password_confirmation">Confirm New Password</label>
                                 <input type="password" name="new_password_confirmation" id="new_password_confirmation" required style="width:100%;">
                             </div>
                             <div style="display:flex;gap:.5rem;justify-content:flex-end;margin-top:.5rem;">
-                                <button type="submit" class="btn btn-primary">Ganti Password</button>
-                                <a href="#" id="cancel-security-btn" class="btn btn-success" style="background:#6c757d;">Batalkan</a>
+                                <button type="submit" class="btn btn-primary">Change Password</button>
+                                <a href="#" id="cancel-security-btn" class="btn btn-success" style="background:#6c757d;">Cancel</a>
                             </div>
                         </form>
                     </div>
                 </div>
             </div>
+        </div>
         </div>
     </div>
 </x-app>

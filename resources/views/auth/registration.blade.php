@@ -15,7 +15,7 @@
     <div class="form-group">
         <label for="email">Email Address</label>
         <input id="email" type="email" name="email" value="{{ old('email') }}" required>
-        <small style="color:#666;font-size:0.875rem;">Contoh: nama@domain.com</small>
+    <small style="color:#666;font-size:0.875rem;">Example: name@domain.com</small>
     </div>
 
     <div class="form-group">

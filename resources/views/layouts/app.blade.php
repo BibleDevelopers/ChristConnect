@@ -21,9 +21,9 @@
         </div>
 
         <nav class="center-links">
-            <a href="{{ route('alkitab') }}">Alkitab</a> |
-            <a href="{{ route('renungan') }}">Renungan Harian</a> |
-            <a href="{{ route('donations.index') }}">Donasi</a>
+            <a href="{{ route('alkitab') }}">Bible</a> |
+            <a href="{{ route('renungan') }}">Daily Devotional</a> |
+            <a href="{{ route('donations.index') }}">Donations</a>
             @auth
                 | <a href="{{ route('wallet.index') }}">Wallet</a>
             @endauth

@@ -3,14 +3,14 @@
 @section('content')
 <div style="max-width:640px;margin:2rem auto;">
     <div class="dashboard-card">
-        <h2 style="text-align:center">Verifikasi Email</h2>
+    <h2 style="text-align:center">Email Verification</h2>
 
         @if(session('status') === 'verification-code-resent')
-            <div style="background:#e6f7ff;border-left:4px solid #2b9ed9;padding:0.75rem;margin-bottom:0.75rem;">Kode verifikasi telah dikirim ulang.</div>
+            <div style="background:#e6f7ff;border-left:4px solid #2b9ed9;padding:0.75rem;margin-bottom:0.75rem;">Verification code has been resent.</div>
         @endif
 
         @if(session('status') === 'email-verified')
-            <div style="background:#e6ffed;border-left:4px solid #5cb85c;padding:0.75rem;margin-bottom:0.75rem;">Email berhasil diverifikasi. Silakan login.</div>
+            <div style="background:#e6ffed;border-left:4px solid #5cb85c;padding:0.75rem;margin-bottom:0.75rem;">Email verified successfully. Please login.</div>
         @endif
 
         @if($errors->any())
@@ -33,7 +33,7 @@
             </div>
 
             <div class="form-group">
-                <label for="code">Kode Verifikasi (6 digit)</label>
+                <label for="code">Verification Code (6 digits)</label>
                 <input id="code" name="code" type="text" inputmode="numeric" pattern="\d{6}" maxlength="6" required style="width:100%;letter-spacing:4px;font-size:1.25rem;text-align:center;">
             </div>
 
@@ -47,7 +47,7 @@
                     <form method="POST" action="{{ route('verification.code.resend') }}" style="display:inline;">
                         @csrf
                         <input type="hidden" name="email" value="{{ old('email', $email) }}">
-                        <button type="submit" class="btn">Kirim</button>
+                        <button type="submit" class="btn">Send</button>
                     </form>
                 </div>
             </div>
