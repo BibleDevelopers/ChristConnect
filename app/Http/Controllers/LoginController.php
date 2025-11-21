@@ -28,6 +28,24 @@ class LoginController extends Controller
         if (Auth::attempt($credentials, $remember)) {
             $request->session()->regenerate();
             
+            $user = Auth::user();
+            
+            // Check if email is not verified
+            if (!$user->hasVerifiedEmail()) {
+                // Generate new verification code
+                $code = (string) random_int(100000, 999999);
+                $user->email_verification_code = $code;
+                $user->email_verification_expires_at = now()->addMinutes(15);
+                $user->save();
+                
+                // Send verification code
+                \Illuminate\Support\Facades\Mail::to($user->email)->send(new \App\Mail\EmailVerificationCode($code, $user->name));
+                
+                // Redirect to verification page
+                return redirect()->route('verification.code.show', ['email' => $user->email])
+                    ->with('status', 'verification-code-sent');
+            }
+            
             return redirect()->intended(route('dashboard'))
                 ->with('success', 'Selamat datang, ' . Auth::user()->name . '!');
         }

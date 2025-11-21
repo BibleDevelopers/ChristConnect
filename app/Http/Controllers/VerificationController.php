@@ -6,6 +6,7 @@ use App\Mail\EmailVerificationCode;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 
 class VerificationController extends Controller
@@ -20,35 +21,35 @@ class VerificationController extends Controller
     public function verify(Request $request)
     {
         $request->validate([
-            'email' => ['required','email'],
-            'code' => ['required','digits:6'],
+            'email' => 'required|email',
+            'code' => 'required|string|size:6',
         ]);
 
         $user = User::where('email', $request->email)->first();
 
         if (!$user) {
-            return back()->withErrors(['email' => 'Alamat email tidak ditemukan.']);
+            return back()->withErrors(['email' => 'User not found.']);
         }
 
-        if (!$user->email_verification_code || !$user->email_verification_expires_at) {
-            return back()->withErrors(['code' => 'Tidak ada kode verifikasi yang aktif. Silakan minta kirim ulang.']);
+        if ($user->email_verification_code !== $request->code) {
+            return back()->withErrors(['code' => 'Invalid verification code.']);
         }
 
-        if (Carbon::now()->greaterThan(Carbon::parse($user->email_verification_expires_at))) {
-            return back()->withErrors(['code' => 'Kode verifikasi sudah kadaluwarsa. Silakan kirim ulang kode.']);
+        if ($user->email_verification_expires_at->isPast()) {
+            return back()->withErrors(['code' => 'Verification code has expired.']);
         }
 
-        if (!hash_equals($user->email_verification_code, $request->code)) {
-            return back()->withErrors(['code' => 'Kode yang Anda masukkan salah.']);
-        }
-
-        // correct — mark email as verified
-        $user->email_verified_at = Carbon::now();
+        $user->email_verified_at = now();
         $user->email_verification_code = null;
         $user->email_verification_expires_at = null;
         $user->save();
 
-        return redirect()->route('login')->with('status', 'email-verified');
+        // Login user if not already logged in
+        if (!Auth::check()) {
+            Auth::login($user);
+        }
+
+        return redirect()->route('dashboard')->with('success', 'Email verified successfully!');
     }
 
     public function resend(Request $request)

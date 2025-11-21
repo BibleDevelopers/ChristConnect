@@ -10,22 +10,22 @@ class BadgeService
     private const BADGES = [
         [
             'name' => 'Bronze Donor',
-            'min' => 1,
+            'min' => 1, // Rp1 (minimal donate)
             'icon' => null,
         ],
         [
             'name' => 'Silver Donor',
-            'min' => 1_000_000,
+            'min' => 1_000_000, // Rp1.000.000
             'icon' => null,
         ],
         [
             'name' => 'Gold Donor',
-            'min' => 50_000_000,
+            'min' => 50_000_000, // Rp50.000.000
             'icon' => null,
         ],
         [
             'name' => 'Platinum Donor',
-            'min' => 100_000_000,
+            'min' => 100_000_000, // Rp100.000.000
             'icon' => null,
         ],
     ];

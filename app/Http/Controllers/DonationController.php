@@ -75,6 +75,22 @@ class DonationController extends Controller
         return view('donations.edit', compact('donation'));
     }
 
+    public function detail(Donation $donation)
+    {
+        // Admin only
+        if (Auth::user()->role !== 'admin') {
+            return redirect()->route('donations.index')->with('error', 'Unauthorized');
+        }
+
+        // Get all donation transactions for this campaign
+        $transactions = Transaction::where('donation_id', $donation->id)
+            ->where('type', 'donation')
+            ->with('user')
+            ->orderBy('created_at', 'desc')
+            ->paginate(20);
+
+        return view('donations.detail', compact('donation', 'transactions'));
+    }
 
     public function donate(Request $request, Donation $donation)
     {
@@ -105,6 +121,7 @@ class DonationController extends Controller
 
                 // 4. Catat di Transactions
                 $user->transactions()->create([
+                    'donation_id' => $donation->id,
                     'type' => 'donation',
                     'amount' => -$amount, // Minus karena uang keluar
                     'description' => 'Donasi untuk: ' . $donation->title

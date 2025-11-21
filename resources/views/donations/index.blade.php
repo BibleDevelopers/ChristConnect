@@ -69,9 +69,10 @@
                     @auth
                         @if (auth()->user()->role === 'admin')
                             <div style="margin-top:1rem;display:flex;gap:.5rem;justify-content:flex-end;">
-                      <a href="{{ route('donations.edit', $donation) }}" class="btn">Manage</a>
-                      <form method="POST" action="{{ route('donations.destroy', $donation) }}"
-                          onsubmit="return confirm('Delete this donation campaign?');" style="display:inline;">
++                                <a href="{{ route('donations.detail', $donation) }}" class="btn" style="background:#0ea5e9;color:#fff;">Detail</a>
+                                <a href="{{ route('donations.edit', $donation) }}" class="btn btn-primary">Edit</a>
+                                <form method="POST" action="{{ route('donations.destroy', $donation) }}"
+                                      onsubmit="return confirm('Delete this donation campaign?');" style="display:inline;">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="btn" style="background:#ef4444;color:#fff;">Delete</button>

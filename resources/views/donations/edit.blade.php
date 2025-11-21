@@ -1,94 +1,71 @@
-<x-app class="donations-page">
-    <div class="donations-wrapper">
-        <h1>Edit Donation</h1>
-
-        <form action="{{ route('donations.update', $donation) }}" method="POST">
-            @csrf
-            @method('PUT')
-
-            <div class="mb-3">
-                <label class="form-label">Title</label>
-                <input type="text" name="title" class="form-control" value="{{ old('title', $donation->title) }}" required>
+<x-app class="dashboard-background">
+    <div class="dashboard-container">
+        <div class="donations-wrapper">
+            <div class="dashboard-card" style="max-width:1000px;margin:0 auto;">
+                <div style="display:flex;justify-content:space-between;align-items:center;gap:1rem;">
+                    <div>
+                        <h1 style="margin:0;font-size:1.5rem;">Edit Donation Campaign</h1>
+                        <p style="margin:.5rem 0 0 0;color:#666;">Update your donation campaign details below.</p>
+                    </div>
+                    <div>
+                        <a href="{{ route('donations.index') }}" class="btn">Back</a>
+                    </div>
+                </div>
             </div>
 
-            <div class="mb-3">
-                <label class="form-label">Description</label>
-                <textarea name="description" class="form-control" rows="3">{{ old('description', $donation->description) }}</textarea>
-            </div>
+            <div class="dashboard-card" style="max-width:1000px;margin:1rem auto 0;">
+                @if(session('error'))
+                    <div style="background:#fff4f4;border-left:4px solid #ff6b6b;color:#5a2121;padding:.6rem;margin-bottom:1rem;">{{ session('error') }}</div>
+                @endif
 
-            <div class="mb-3">
-                <label class="form-label">Goal Amount</label>
-                <input type="number" name="goal_amount" class="form-control" value="{{ old('goal_amount', $donation->goal_amount) }}" required>
-            </div>
+                @if($errors->any())
+                    <div style="background:#fff4f4;border-left:4px solid #ff6b6b;color:#5a2121;padding:.6rem;margin-bottom:1rem;">
+                        <ul style="margin:0;padding-left:1.2rem;">
+                            @foreach($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
 
-            <h4>Fixed-price options</h4>
-            <p class="text-muted">Edit existing options or add new ones. Deleting will remove the option.</p>
+                <form action="{{ route('donations.update', $donation) }}" method="POST" style="width:100%;">
+                    @csrf
+                    @method('PUT')
 
-            <div id="options-list">
-                @foreach ($donation->options as $i => $option)
-                    <div class="option-row mb-2 border rounded p-2" data-index="{{ $i }}">
-                        <input type="hidden" name="options[{{ $i }}][id]" value="{{ $option->id }}">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <label class="form-label">Label</label>
-                                <input type="text" name="options[{{ $i }}][label]" class="form-control" value="{{ $option->label }}">
-                            </div>
-                            <div class="col-md-4">
-                                <label class="form-label">Amount</label>
-                                <input type="number" step="0.01" name="options[{{ $i }}][amount]" class="form-control" value="{{ $option->amount }}" required>
-                            </div>
-                            <div class="col-md-2 d-flex align-items-end">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="options[{{ $i }}][_delete]" value="1" id="delete-{{ $option->id }}">
-                                    <label class="form-check-label text-danger" for="delete-{{ $option->id }}">Delete</label>
-                                </div>
-                            </div>
+                    <div style="display:flex;flex-direction:column;gap:.75rem;">
+                        <div>
+                            <label style="font-weight:600;display:block;margin-bottom:.25rem;">Donation Title</label>
+                            <input type="text" name="title" class="form-control" value="{{ old('title', $donation->title) }}" required style="width:100%;padding:.5rem;border:1px solid #d1d5db;border-radius:6px;background:#fafafa;">
+                            @if($errors->first('title'))<div style="color:#c0392b;font-size:.85rem;margin-top:.25rem;">{{ $errors->first('title') }}</div>@endif
+                        </div>
+
+                        <div>
+                            <label style="font-weight:600;display:block;margin-bottom:.25rem;">Description</label>
+                            <textarea name="description" class="form-control" rows="4" style="width:100%;padding:.5rem;border:1px solid #d1d5db;border-radius:6px;background:#fff;">{{ old('description', $donation->description) }}</textarea>
+                            @if($errors->first('description'))<div style="color:#c0392b;font-size:.85rem;margin-top:.25rem;">{{ $errors->first('description') }}</div>@endif
+                        </div>
+
+                        <div>
+                            <label style="font-weight:600;display:block;margin-bottom:.25rem;">Target Amount (Rp)</label>
+                            <input type="number" name="goal_amount" class="form-control" value="{{ old('goal_amount', $donation->goal_amount) }}" required min="0" style="width:100%;padding:.5rem;border:1px solid #d1d5db;border-radius:6px;background:#fafafa;">
+                            @if($errors->first('goal_amount'))<div style="color:#c0392b;font-size:.85rem;margin-top:.25rem;">{{ $errors->first('goal_amount') }}</div>@endif
+                        </div>
+
+                        <div style="background:#f0f9ff;padding:1rem;border-radius:6px;border-left:4px solid #0ea5e9;">
+                            <p style="margin:0;color:#0c4a6e;font-size:.9rem;">
+                                <strong>Current Status:</strong><br>
+                                Collected: Rp{{ number_format($donation->collected_amount, 0, ',', '.') }}<br>
+                                <small>Note: Updating the target amount will not affect the collected amount.</small>
+                            </p>
+                        </div>
+
+                        <div style="display:flex;justify-content:flex-end;gap:.5rem;margin-top:1rem;">
+                            <a href="{{ route('donations.index') }}" class="btn" style="background:#6c757d;color:#fff;">Cancel</a>
+                            <button type="submit" class="btn btn-primary">Update Campaign</button>
                         </div>
                     </div>
-                @endforeach
+                </form>
             </div>
-
-            <button type="button" id="add-option" class="btn btn-outline-primary mb-3">+ Add option</button>
-
-            <div class="mb-3">
-                <button type="submit" class="btn btn-primary">Save</button>
-                <a href="{{ route('donations.index') }}" class="btn btn-secondary">Cancel</a>
-            </div>
-        </form>
+        </div>
     </div>
-
-    <script>
-        (function(){
-            const addBtn = document.getElementById('add-option');
-            const list = document.getElementById('options-list');
-            let nextIndex = {{ $donation->options->count() }};
-
-            addBtn.addEventListener('click', function(){
-                const idx = nextIndex++;
-                const wrapper = document.createElement('div');
-                wrapper.className = 'option-row mb-2 border rounded p-2';
-                wrapper.dataset.index = idx;
-                wrapper.innerHTML = `
-                    <div class="row">
-                        <div class="col-md-6">
-                            <label class="form-label">Label</label>
-                            <input type="text" name="options[${idx}][label]" class="form-control">
-                        </div>
-                        <div class="col-md-4">
-                            <label class="form-label">Amount</label>
-                            <input type="number" step="0.01" name="options[${idx}][amount]" class="form-control" required>
-                        </div>
-                        <div class="col-md-2 d-flex align-items-end">
-                            <button type="button" class="btn btn-danger btn-sm remove-new">Remove</button>
-                        </div>
-                    </div>
-                `;
-                list.appendChild(wrapper);
-
-                wrapper.querySelector('.remove-new').addEventListener('click', function(){
-                    wrapper.remove();
-                });
-            });
-        })();
-    </script>
 </x-app>

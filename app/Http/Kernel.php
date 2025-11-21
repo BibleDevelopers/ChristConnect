@@ -43,4 +43,26 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'admin' => \App\Http\Middleware\EnsureUserIsAdmin::class,
     ];
+
+    /**
+     * The application's middleware groups.
+     *
+     * @var array<string, array<int, class-string>>
+     */
+    protected $middlewareGroups = [
+        'web' => [
+            \App\Http\Middleware\TrustHosts::class,
+            \App\Http\Middleware\TrustProxies::class,
+            \App\Http\Middleware\HandleCors::class,
+            \App\Http\Middleware\EncryptCookies::class,
+            \App\Http\Middleware\AddQueuedCookiesToResponse::class,
+            \App\Http\Middleware\StartSession::class,
+            \Illuminate\Session\Middleware\AuthenticateSession::class,
+            \App\Http\Middleware\ShareErrorsFromSession::class,
+            \App\Http\Middleware\VerifyCsrfToken::class,
+            \Illuminate\View\Middleware\ShareViewErrors::class,
+            \App\Http\Middleware\RedirectIfAuthenticated::class,
+            \App\Http\Middleware\PreventBackHistory::class,
+        ],
+    ];
 }
