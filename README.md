@@ -1,12 +1,9 @@
 <div id="top">
 
 <!-- HEADER STYLE: CLASSIC -->
-<div align="left">
-# ChristConnect
-    
-<img width="900" height="900" alt="logoNew" src="https://github.com/user-attachments/assets/c54b18cc-bfe7-4d05-8435-3f5bd04f47de" />
-
-<em>Empowering Faith, Connecting Souls, Inspiring Growth</em>
+<div align="center">    
+<img width="200" alt="logoNew" src="https://github.com/user-attachments/assets/c54b18cc-bfe7-4d05-8435-3f5bd04f47de" />
+# ChristConnect: Empowering Faith, Connecting Souls, Inspiring Growth<
 
 <!-- BADGES -->
 <img src="https://img.shields.io/github/license/unknownman77/ChristConnect?style=flat&logo=opensourceinitiative&logoColor=white&color=0080ff" alt="license">
