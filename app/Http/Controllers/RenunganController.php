@@ -12,18 +12,16 @@ class RenunganController extends Controller
     // show paginated list
     public function index()
     {
-        $posts = Renungan::with('user')->latest()->paginate(10);
+        $posts = Renungan::with('user.badges')->latest()->paginate(10);
         return view('renungan.renungan', compact('posts'));
     }
 
     // show single post + comments
     public function show(Renungan $renungan)
     {
-        // load author
-        $renungan->load('user');
+        $renungan->load('user.badges');
 
-        // ambil komentar dengan user, urutkan lama→baru
-        $comments = $renungan->comments()->with('user')->orderBy('created_at', 'asc')->get();
+        $comments = $renungan->comments()->with('user.badges')->orderBy('created_at', 'asc')->get();
 
         return view('renungan.show', compact('renungan', 'comments'));
     }

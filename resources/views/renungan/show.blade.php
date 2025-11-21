@@ -5,14 +5,33 @@
         </div>
 
         <div class="dashboard-card" style="max-width:900px;margin:0 auto;">
+            @php
+                $userBadge = optional($renungan->user)->badges->first();
+                $badgeImg = null;
+                if ($userBadge) {
+                    $b = strtolower($userBadge->name ?? '');
+                    if (Str::contains($b, 'bronze')) {
+                        $badgeImg = Vite::asset('resources/images/bronze.png');
+                    } elseif (Str::contains($b, 'silver')) {
+                        $badgeImg = Vite::asset('resources/images/silver.png');
+                    } elseif (Str::contains($b, 'gold')) {
+                        $badgeImg = Vite::asset('resources/images/gold.png');
+                    } elseif (Str::contains($b, 'platinum')) {
+                        $badgeImg = Vite::asset('resources/images/platinum.png');
+                    }
+                }
+            @endphp
             <div style="display:flex;gap:1rem;align-items:center;">
                 <div class="avatar" style="width:64px;height:64px;border-radius:50%;background:#f3f4f6;display:flex;align-items:center;justify-content:center;font-weight:700;color:#555;font-size:1.25rem;">
                     {{ strtoupper(substr(optional($renungan->user)->name ?? 'U',0,1)) }}
                 </div>
                 <div style="flex:1;">
                     <h1 style="margin:0;font-size:1.5rem;">{{ $renungan->title }}</h1>
-                    <div style="color:#666;font-size:.95rem;margin-top:.25rem;">
-                        by <strong>{{ optional($renungan->user)->name ?? 'Unknown' }}</strong>
+                    <div style="color:#666;font-size:.95rem;margin-top:.25rem;display:flex;align-items:center;gap:0.5rem;">
+                        <span>by <strong>{{ optional($renungan->user)->name ?? 'Unknown' }}</strong></span>
+                        @if($badgeImg)
+                            <img src="{{ $badgeImg }}" alt="Badge" style="width:24px;height:24px;border-radius:4px;" title="{{ $userBadge->name }}">
+                        @endif
                         &nbsp;—&nbsp; {{ $renungan->created_at->format('d M Y H:i') }}
                     </div>
                 </div>
@@ -48,10 +67,29 @@
                 @else
                     <div style="display:flex;flex-direction:column;gap:.75rem;">
                         @foreach($comments as $comment)
+                            @php
+                                $commentUserBadge = optional($comment->user)->badges->first();
+                                $commentBadgeImg = null;
+                                if ($commentUserBadge) {
+                                    $cb = strtolower($commentUserBadge->name ?? '');
+                                    if (Str::contains($cb, 'bronze')) {
+                                        $commentBadgeImg = Vite::asset('resources/images/bronze.png');
+                                    } elseif (Str::contains($cb, 'silver')) {
+                                        $commentBadgeImg = Vite::asset('resources/images/silver.png');
+                                    } elseif (Str::contains($cb, 'gold')) {
+                                        $commentBadgeImg = Vite::asset('resources/images/gold.png');
+                                    } elseif (Str::contains($cb, 'platinum')) {
+                                        $commentBadgeImg = Vite::asset('resources/images/platinum.png');
+                                    }
+                                }
+                            @endphp
                             <div style="padding:.75rem;border:1px solid #eef2f6;border-radius:6px;background:#fff;">
                                 <div style="display:flex;justify-content:space-between;align-items:center;gap:.5rem;">
-                                    <div>
+                                    <div style="display:flex;align-items:center;gap:0.5rem;">
                                         <strong>{{ optional($comment->user)->name ?? 'User' }}</strong>
+                                        @if($commentBadgeImg)
+                                            <img src="{{ $commentBadgeImg }}" alt="Badge" style="width:18px;height:18px;border-radius:4px;" title="{{ $commentUserBadge->name }}">
+                                        @endif
                                         <div style="color:#888;font-size:.85rem;">{{ $comment->created_at->diffForHumans() }}</div>
                                     </div>
                                     @if(auth()->check() && (auth()->id() === $comment->user_id || auth()->user()->role === 'admin'))

@@ -60,7 +60,7 @@
 
     <main>
         @auth
-                @if(Str::startsWith(Route::currentRouteName(), 'donations'))
+            @if(Str::startsWith(Route::currentRouteName(), 'donations'))
                 @php($walletBalance = optional(Auth::user()->wallet)->balance ?? 0)
                 <div class="dashboard-container">
                     <div class="donations-wrapper">
@@ -70,7 +70,7 @@
                         </div>
                     </div>
                 </div>
-                @endif
+            @endif
         @endauth
 
          {{ $slot }}

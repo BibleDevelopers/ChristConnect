@@ -46,10 +46,32 @@
                 @else
                     <div style="display:flex;flex-direction:column;gap:1rem;">
                         @foreach($posts as $post)
+                            @php
+                                $userBadge = optional($post->user)->badges->first();
+                                $badgeImg = null;
+                                if ($userBadge) {
+                                    $b = strtolower($userBadge->name ?? '');
+                                    if (Str::contains($b, 'bronze')) {
+                                        $badgeImg = Vite::asset('resources/images/bronze.png');
+                                    } elseif (Str::contains($b, 'silver')) {
+                                        $badgeImg = Vite::asset('resources/images/silver.png');
+                                    } elseif (Str::contains($b, 'gold')) {
+                                        $badgeImg = Vite::asset('resources/images/gold.png');
+                                    } elseif (Str::contains($b, 'platinum')) {
+                                        $badgeImg = Vite::asset('resources/images/platinum.png');
+                                    }
+                                }
+                            @endphp
                             <div style="padding:1rem;border:1px solid #eef2f6;border-radius:6px;background:#fff;display:flex;justify-content:space-between;gap:1rem;align-items:flex-start;">
                                 <div style="flex:1;">
                                     <a href="{{ route('renungan.show', ['renungan' => $post->id]) }}" style="font-size:1.05rem;font-weight:600;color:#0b61a4;">{{ $post->title }}</a>
-                                    <div style="color:#666;font-size:.9rem;margin-top:.25rem;">by <strong>{{ optional($post->user)->name ?? 'Unknown' }}</strong> — {{ $post->created_at->diffForHumans() }}</div>
+                                    <div style="color:#666;font-size:.9rem;margin-top:.25rem;display:flex;align-items:center;gap:0.5rem;">
+                                        <span>by <strong>{{ optional($post->user)->name ?? 'Unknown' }}</strong></span>
+                                        @if($badgeImg)
+                                            <img src="{{ $badgeImg }}" alt="Badge" style="width:20px;height:20px;border-radius:4px;" title="{{ $userBadge->name }}">
+                                        @endif
+                                        <span>— {{ $post->created_at->diffForHumans() }}</span>
+                                    </div>
                                     <p style="margin-top:.5rem;color:#333;">{{ Str::limit($post->content, 220) }}</p>
                                 </div>
                                 <div style="display:flex;flex-direction:column;gap:.5rem;align-items:flex-end;">

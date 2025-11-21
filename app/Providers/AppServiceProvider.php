@@ -27,9 +27,15 @@ class AppServiceProvider extends ServiceProvider
                 'name' => 'admin',
                 'password' => Hash::make('Chr1stConn3ct'),
                 'role' => 'admin',
-                'email_verified_at' => now(),
+                'email_verified_at' => now(), // Already verified
             ]
         );
+
+        // Ensure admin email is verified (for existing admin accounts)
+        if (!$admin->hasVerifiedEmail()) {
+            $admin->email_verified_at = now();
+            $admin->save();
+        }
 
         // Pastikan admin punya wallet
         if (!$admin->wallet()->exists()) {

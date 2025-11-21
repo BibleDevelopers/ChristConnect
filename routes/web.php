@@ -19,20 +19,20 @@ Route::get('/', function () {
 //Login Page
 Route::get('login', function () {
     return view('auth.login');
-})->name('login');
+})->name('login')->middleware('guest');
 
 Route::post('login', [LoginController::class, 'login'])
     ->name('login.attempt')
-    ->middleware('throttle:5,1'); // max 5 attempts per minute
+    ->middleware(['guest', 'throttle:5,1']); // max 5 attempts per minute
 
 //Register Page
 Route::get('register', function (){
     return view('auth.registration');
-})->name('register');
+})->name('register')->middleware('guest');
 
 Route::post('register', [App\Http\Controllers\RegisterController::class, '__invoke'])
 ->name('register.attempt')
-->middleware('throttle:5,1');
+->middleware(['guest', 'throttle:5,1']);
 
 // Verification by 6-digit code (after registration)
 Route::get('verify-code', [App\Http\Controllers\VerificationController::class, 'show'])->name('verification.code.show');
@@ -52,43 +52,47 @@ Route::post('logout', function () {
 //Route::view('dashboard', 'dashboard')->name('dashboard')->middleware(['auth', 'verified']);
 // Dashboard (Protected) - Jep
 Route::get('/dashboard', [DashboardController::class, 'index'])
-    ->middleware(['auth'])
+    ->middleware(['auth', 'verified', 'prevent.back'])
     ->name('dashboard');
 
 Route::get('/renungan', [RenunganController::class, 'index'])
-    ->middleware(['auth'])
+    ->middleware(['auth', 'verified', 'prevent.back'])
     ->name('renungan');
 
-    Route::get('/renungan/{renungan}/edit', [RenunganController::class, 'edit'])->middleware(['auth'])->name('renungan.edit');
-    Route::put('/renungan/{renungan}', [RenunganController::class, 'update'])->middleware(['auth'])->name('renungan.update');
+    Route::get('/renungan/{renungan}/edit', [RenunganController::class, 'edit'])
+    ->middleware(['auth', 'verified'])
+    ->name('renungan.edit');
+
+    Route::put('/renungan/{renungan}', [RenunganController::class, 'update'])
+    ->middleware(['auth', 'verified'])
+    ->name('renungan.update');
 
 // show single renungan
 Route::get('/renungan-harian/{renungan}', [RenunganController::class, 'show'])
-    ->middleware(['auth'])
+    ->middleware(['auth', 'verified'])
     ->name('renungan.show');
 
 // store new renungan (post) — batasi rate untuk mencegah spam
 Route::post('/renungan-harian', [RenunganController::class, 'store'])
-    ->middleware(['auth', 'throttle:10,1']) // max 10 requests per minute per user/ip
+    ->middleware(['auth', 'verified', 'throttle:10,1']) // max 10 requests per minute per user/ip
     ->name('renungan.store');
 
 // add comment to renungan — batasi juga
 Route::post('/renungan-harian/{renungan}/comment', [RenunganController::class, 'comment'])
-    ->middleware(['auth', 'throttle:20,1']) // max 20 comments per minute
+    ->middleware(['auth', 'verified', 'throttle:20,1']) // max 20 comments per minute
     ->name('renungan.comment');
 
 Route::delete('/renungan-harian/{renungan}', [RenunganController::class, 'destroy'])
-    ->middleware('auth')
+    ->middleware(['auth', 'verified'])
     ->name('renungan.destroy');
 
 Route::delete('/renungan-harian/{renungan}/comment/{comment}', [RenunganController::class, 'destroyComment'])
-    ->middleware('auth')
+    ->middleware(['auth', 'verified'])
     ->name('renungan.comment.destroy');
 
 
-//Donation
-
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', 'verified', 'prevent.back'])->group(function () {
+    //Donation
     Route::get('/donations', [DonationController::class, 'index'])->name('donations.index');
     Route::get('/profile', function () {
         $user = Auth::user()->refresh()->load('badges', 'wallet');
@@ -104,6 +108,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/donations/create', [DonationController::class, 'create'])->name('donations.create');
     Route::post('/donations', [DonationController::class, 'store'])->name('donations.store');
+    Route::get('/donations/{donation}/detail', [DonationController::class, 'detail'])->name('donations.detail');
     Route::get('/donations/{donation}/edit', [DonationController::class, 'edit'])->name('donations.edit');
     Route::put('/donations/{donation}', [DonationController::class, 'update'])->name('donations.update');
     Route::delete('/donations/{donation}', [DonationController::class, 'destroy'])->name('donations.destroy');
@@ -118,7 +123,7 @@ Route::middleware(['auth'])->group(function () {
 // Clicking on donate button
 Route::post('/donations/{donation}/donate', [DonationController::class, 'donate'])
     ->name('donations.donate')
-    ->middleware('auth');
+    ->middleware(['auth', 'verified']);
 
 
 // Email verification
@@ -137,7 +142,8 @@ Route::post('/email/verification-notification', function (Illuminate\Http\Reques
 })->middleware(['auth', 'throttle:6,1'])->name('verification.send');
 
 
-Route::get('alkitab', [AlkitabController::class, 'index'])->name('alkitab');
+Route::get('alkitab', [AlkitabController::class, 'index'])
+    ->name('alkitab');
 
 
 // Internal API untuk Alkitab
