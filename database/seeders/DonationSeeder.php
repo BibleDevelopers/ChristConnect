@@ -53,6 +53,16 @@ class DonationSeeder extends Seeder
                 'created_at' => $now,
                 'updated_at' => $now,
             ],
+            [
+                'title' => 'Emergency Relief',
+                'slug' => 'emergency-relief',
+                'description' => 'Immediate assistance for urgent community needs and disasters.',
+                'goal_amount' => 3000000,
+                'collected_amount' => 500000,
+                'active' => 1,
+                'created_at' => $now,
+                'updated_at' => $now,
+            ],
         ];
 
         // Avoid duplicate slugs: insert only those that don't exist
