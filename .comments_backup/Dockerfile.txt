@@ -1,0 +1,26 @@
+# Dockerfile (save in project root)
+FROM php:8.2-fpm
+
+# install system libs + PHP extensions
+RUN apt-get update && apt-get install -y \
+    git unzip libzip-dev zip curl libpng-dev libonig-dev \
+    && docker-php-ext-install pdo_mysql zip mbstring gd
+
+# install composer (from official image)
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+
+WORKDIR /var/www
+
+# copy project files
+COPY . /var/www
+
+# install PHP deps
+RUN composer install --no-interaction --prefer-dist --optimize-autoloader
+
+# give permissions for storage & bootstrap cache
+RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache || true
+RUN chmod -R 775 /var/www/storage /var/www/bootstrap/cache || true
+
+EXPOSE 8000
+
+CMD ["php","artisan","serve","--host=0.0.0.0","--port=8000"]

@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function showLoading(show) { loading.style.display = show ? '' : 'none'; }
 
-    // populate chapter select when book changes
+    
     bookSelect.addEventListener('change', function () {
         const chapters = parseInt(bookSelect.selectedOptions[0]?.dataset.chapters || 0, 10);
         chapterSelect.innerHTML = '';
@@ -60,7 +60,7 @@ document.addEventListener('DOMContentLoaded', function () {
         verseSelect.disabled = true;
     });
 
-    // when chapter selected, fetch verses
+    
     chapterSelect.addEventListener('change', function () {
         const version = versionSelect.value;
         const book = bookSelect.value;

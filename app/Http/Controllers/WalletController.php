@@ -12,7 +12,7 @@ class WalletController extends Controller
     {
         $user = Auth::user()->load('wallet', 'transactions');
         
-        // Auto-create wallet if missing
+        
         if (!$user->wallet) {
             $user->wallet()->create(['balance' => 0]);
             $user->load('wallet');

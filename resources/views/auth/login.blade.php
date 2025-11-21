@@ -6,7 +6,7 @@
     switchLink="{{ route('register') }}"
     switchLinkText="Register here"
 >
-    {{-- Slot for form fields --}}
+    
     <div class="form-group">
         <label for="email">Email Address</label>
         <input id="email" type="email" name="email" required autofocus>

@@ -23,7 +23,7 @@ class DonationController extends Controller
 
     public function index()
     {
-        // If not logged in → redirect to login
+        
         if (!Auth::check()) {
             return redirect()->route('login');
         }
@@ -34,7 +34,7 @@ class DonationController extends Controller
 
     public function create()
     {
-        // Create donation box (admin only)
+        
         if (Auth::user()->role !== 'admin') {
             return redirect()->route('donations.index')->with('error', 'Unauthorized');
         }
@@ -44,7 +44,7 @@ class DonationController extends Controller
 
     public function store(Request $request)
     {
-        // Only admins may create donation boxes
+        
         if (Auth::user()->role !== 'admin') {
             return redirect()->route('donations.index')->with('error', 'Unauthorized');
         }
@@ -67,7 +67,7 @@ class DonationController extends Controller
 
     public function edit(Donation $donation)
     {
-        // Admin only
+        
         if (Auth::user()->role !== 'admin') {
             return redirect()->route('donations.index')->with('error', 'Unauthorized');
         }
@@ -77,12 +77,12 @@ class DonationController extends Controller
 
     public function detail(Donation $donation)
     {
-        // Admin only
+        
         if (Auth::user()->role !== 'admin') {
             return redirect()->route('donations.index')->with('error', 'Unauthorized');
         }
 
-        // Get all donation transactions for this campaign
+        
         $transactions = Transaction::where('donation_id', $donation->id)
             ->where('type', 'donation')
             ->with('user')
@@ -107,35 +107,35 @@ class DonationController extends Controller
         try {
             DB::transaction(function () use ($user, $amount, $donation) {
                 
-                // 1. Ambil wallet user & KUNCI (agar aman dari double-spending)
+                
                 $wallet = $user->wallet()->lockForUpdate()->first();
 
-                // 2. Cek Saldo
+                
                 if ($wallet->balance < $amount) {
-                    // Melempar error ini akan otomatis membatalkan transaksi (rollback)
+                    
                     throw new \Exception('Saldo dompet Anda tidak mencukupi.');
                 }
 
-                // 3. Kurangi Saldo Wallet
+                
                 $wallet->decrement('balance', $amount);
 
-                // 4. Catat di Transactions
+                
                 $user->transactions()->create([
                     'donation_id' => $donation->id,
                     'type' => 'donation',
-                    'amount' => -$amount, // Minus karena uang keluar
+                    'amount' => -$amount, 
                     'description' => 'Donasi untuk: ' . $donation->title
                 ]);
 
-                // 5. Tambah Uang di Kotak Donasi
-                // Kita pakai increment() agar aman jika ada 2 donasi bersamaan
+                
+                
                 $donation->increment('collected_amount', $amount);
 
-            }); // Transaksi Selesai & Sukses
+            }); 
 
         } catch (\Exception $e) {
-            // Jika saldo tidak cukup atau ada error
-            // Redirect kembali ke halaman donasi dengan pesan error
+            
+            
             return redirect()->back()->with('error', $e->getMessage());
         }
 
@@ -143,18 +143,18 @@ class DonationController extends Controller
 
         if ($user && $amount > 0) {
             $user->increment('total_donated', $amount);
-            $user->refresh(); // ensure latest total_donated for badge assignment
+            $user->refresh(); 
             $this->badgeService->syncDonationBadges($user);
         }
 
-        // Redirect dengan pesan sukses
+        
         return redirect()->route('donations.index')->with('success', 'Thank you for your donation!');
     }
 
 
     public function update(Request $request, Donation $donation)
     {
-        // Admin only
+        
         if (Auth::user()->role !== 'admin') {
             return redirect()->route('donations.index')->with('error', 'Unauthorized');
         }
@@ -187,23 +187,23 @@ class DonationController extends Controller
      
     private function checkAndAwardBadges(User $user)
     {
-        // 1. Hitung total donasi (ambil nilai absolut dari jumlah negatif)
+        
         $totalDonation = abs($user->transactions()->where('type', 'donation')->sum('amount'));
 
-        // 2. Ambil ID badge yang sudah dimiliki user
+        
         $currentBadgeIds = $user->badges()->pluck('badges.id');
 
-        // 3. Cari badge baru yang layak didapat
-        $newBadges = Badge::where('min_donation', '<=', $totalDonation) // Syarat donasi terpenuhi
-                            ->whereNotIn('id', $currentBadgeIds)        // & Badge-nya belum dimiliki
+        
+        $newBadges = Badge::where('min_donation', '<=', $totalDonation) 
+                            ->whereNotIn('id', $currentBadgeIds)        
                             ->get();
 
-        // 4. Berikan badge baru ke user
+        
         if ($newBadges->isNotEmpty()) {
             $user->badges()->attach($newBadges->pluck('id'));
             
-            // Opsional: Beri notifikasi ke user bahwa mereka dapat badge baru
-            // return redirect()->with('badge_success', 'Selamat! Anda mendapat badge baru!');
+            
+            
         }
     }
 }

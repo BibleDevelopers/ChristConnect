@@ -1,6 +1,4 @@
-# How to Run ChristConnect
 
-## Setup Instructions
 
 1. **Clone the repository:**
    ```bash
@@ -38,14 +36,13 @@
    This will fill the database with initial data.
    ```bash
    php artisan db:seed
-   ```
+   
 
 8. **Install JavaScript dependencies using NPM:**
    ```bash
    npm install
    ```
 
-## Running the Application
 
 You will need to have two terminal windows open simultaneously.
 
@@ -62,4 +59,4 @@ You will need to have two terminal windows open simultaneously.
    ```
 
 3. **Access the website:**
-   Open your web browser and navigate to the URL provided by `php artisan serve` (usually `http://127.0.0.1:8000`).
+   Open your web browser and navigate to the URL provided by `php artisan serve` (usually `http:

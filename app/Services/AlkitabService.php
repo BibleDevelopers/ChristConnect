@@ -24,7 +24,7 @@ class AlkitabService
             return [];
         }
 
-        // try a couple of common endpoints
+        
         $candidates = [
             $this->base . '/books',
             $this->base . '/api/books',
@@ -37,7 +37,7 @@ class AlkitabService
                     return $res->json();
                 }
             } catch (\Throwable $e) {
-                // ignore and try next
+                
             }
         }
 
@@ -51,7 +51,7 @@ class AlkitabService
         }
 
         $candidates = [
-            // common patterns used by various alkitab APIs
+            
             $this->base . "/api/alkitab/{$version}/{$book}/{$chapter}",
             $this->base . "/api/verses/{$version}/{$book}/{$chapter}",
             $this->base . "/verses/{$version}/{$book}/{$chapter}",
@@ -65,7 +65,7 @@ class AlkitabService
                     return $res->json();
                 }
             } catch (\Throwable $e) {
-                // ignore
+                
             }
         }
 
@@ -95,7 +95,7 @@ class AlkitabService
                     return $res->json();
                 }
             } catch (\Throwable $e) {
-                // ignore
+                
             }
         }
 

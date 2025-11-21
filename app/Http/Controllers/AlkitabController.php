@@ -10,7 +10,7 @@ class AlkitabController extends Controller
 {
     public function index(Request $request)
     {
-        // if external API configured, prefer it but fall back to local list when empty
+        
         $version = $request->input('version');
         $service = new AlkitabService();
         $books = [];
@@ -33,7 +33,7 @@ class AlkitabController extends Controller
             if (!empty($res)) {
                 return response()->json($res);
             }
-            // if external service returns nothing, fall through to DB fallback
+            
         }
 
         $verses = DB::table('bible_verses')
@@ -62,7 +62,7 @@ class AlkitabController extends Controller
             if (!empty($results)) {
                 return response()->json($results);
             }
-            // fall back to DB if external search returned empty
+            
         }
 
         $dbQuery = DB::table('bible_verses')
@@ -85,8 +85,8 @@ class AlkitabController extends Controller
     private function getBooks(?string $version = null)
     {
         try {
-            // Canonical Bible book order (Genesis -> Revelation). Books not in this list
-            // will be appended after the canonical ones.
+            
+            
             $bookOrder = [
                 'genesis','exodus','leviticus','numbers','deuteronomy','joshua','judges','ruth',
                 'samuel','kings','chronicles','ezra','nehemiah','esther','job','psalms','proverbs',
@@ -107,24 +107,24 @@ class AlkitabController extends Controller
                 ->toArray();
 
             if (empty($rows)) {
-                // Fallback small list when DB empty
+                
                 return [
                     ['id' => 'genesis', 'name' => 'Kejadian', 'chapters' => 50],
                     ['id' => 'exodus', 'name' => 'Keluaran', 'chapters' => 40],
                 ];
             }
 
-            // Sort rows according to canonical order
+            
             usort($rows, function ($a, $b) use ($bookOrder) {
                 $ia = array_search($a['book'], $bookOrder, true);
                 $ib = array_search($b['book'], $bookOrder, true);
                 if ($ia === false && $ib === false) return strcmp($a['book'], $b['book']);
-                if ($ia === false) return 1; // a goes after known-order books
+                if ($ia === false) return 1; 
                 if ($ib === false) return -1;
                 return $ia <=> $ib;
             });
 
-            // If version is 'tb' (Indonesian TB), map book ids to Indonesian names when available
+            
             $tbNames = [
                 'genesis' => 'Kejadian', 'exodus' => 'Keluaran', 'leviticus' => 'Imamat',
                 'numbers' => 'Bilangan', 'deuteronomy' => 'Ulangan', 'joshua' => 'Yosua',
@@ -158,7 +158,7 @@ class AlkitabController extends Controller
                 ];
             }, $rows);
         } catch (\Exception $e) {
-            // If DB isn't available for some reason, return the minimal placeholder list.
+            
             return [
                 ['id' => 'genesis', 'name' => 'Kejadian', 'chapters' => 50],
                 ['id' => 'exodus', 'name' => 'Keluaran', 'chapters' => 40],

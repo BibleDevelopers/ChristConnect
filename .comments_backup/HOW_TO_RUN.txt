@@ -1,0 +1,66 @@
+# How to Run ChristConnect
+
+## Setup Instructions
+
+1. **Clone the repository:**
+   ```bash
+   git clone <your-repository-url>
+   cd ChristConnect
+   ```
+
+2. **Install PHP dependencies using Composer:**
+   ```bash
+   composer install
+   ```
+
+3. **Create your environment file:**
+   Copy the example environment file. You will need to configure your database credentials in this new file.
+   ```bash
+   cp .env.example .env
+   ```
+
+4. **Generate an application key:**
+   ```bash
+   php artisan key:generate
+   ```
+
+5. **Configure your database:**
+   - Open the `.env` file in a text editor.
+   - Update the `DB_DATABASE`, `DB_USERNAME`, and `DB_PASSWORD` options to match your local database configuration.
+
+6. **Run database migrations:**
+   This will create all the necessary tables in your database.
+   ```bash
+   php artisan migrate
+   ```
+
+7. **(Optional) Seed the database:**
+   This will fill the database with initial data.
+   ```bash
+   # Run the full seeder (calls KJV importer and donation seeder)
+   php artisan db:seed
+   
+
+8. **Install JavaScript dependencies using NPM:**
+   ```bash
+   npm install
+   ```
+
+## Running the Application
+
+You will need to have two terminal windows open simultaneously.
+
+1. **Terminal 1: Start the Vite frontend development server:**
+   This compiles and serves your frontend assets (CSS, JS).
+   ```bash
+   npm run dev
+   ```
+
+2. **Terminal 2: Start the PHP backend server:**
+   This runs the main Laravel application.
+   ```bash
+   php artisan serve
+   ```
+
+3. **Access the website:**
+   Open your web browser and navigate to the URL provided by `php artisan serve` (usually `http://127.0.0.1:8000`).

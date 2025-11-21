@@ -6,13 +6,11 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
+    
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->string('role')->default('user'); // 'user' or 'admin'
+            $table->string('role')->default('user'); 
         });
     }
 

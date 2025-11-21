@@ -17,7 +17,7 @@
             </div>
         </div>
 
-        {{-- Flash messages / validation errors --}}
+        
         @if(session('status'))
             <div class="dashboard-card" role="status" style="background:#e6ffed;border-left:4px solid #5cb85c;color:#1e4620;">
                     @if(session('status') === 'verification-link-sent')
@@ -157,7 +157,7 @@
 
         let originalName = nameInput ? nameInput.value : '';
 
-        // initialize: info is visible, so Edit should be enabled, Change is blue/enabled
+        
         if (editBtn) {
             editBtn.disabled = false;
             editBtn.classList.add('btn-primary');
@@ -175,10 +175,10 @@
             changeBtn.addEventListener('click', function (e) {
                 e.preventDefault();
                 if (!securityCard || !infoCard) return;
-                // show security, hide info
+                
                 securityCard.style.display = 'block';
                 infoCard.style.display = 'none';
-                // disable and gray out change button; enable edit as blue
+                
                 changeBtn.disabled = true;
                 changeBtn.classList.remove('btn-primary');
                 changeBtn.style.background = '#6c757d';
@@ -196,10 +196,10 @@
             cancelSecurityBtn.addEventListener('click', function (e) {
                 e.preventDefault();
                 if (!securityCard || !infoCard) return;
-                // hide security, show info
+                
                 securityCard.style.display = 'none';
                 infoCard.style.display = 'block';
-                // enable and highlight change button, and enable edit
+                
                 if (changeBtn) {
                     changeBtn.disabled = false;
                     changeBtn.classList.add('btn-primary');
@@ -218,7 +218,7 @@
         if (editBtn) {
             editBtn.addEventListener('click', function (e) {
                 e.preventDefault();
-                // Enable name input and show Save/Cancel
+                
                 if (nameInput) {
                     nameInput.disabled = false;
                     nameInput.focus();
@@ -226,7 +226,7 @@
                 if (profileActions) {
                     profileActions.style.display = 'flex';
                 }
-                // Disable edit button while editing
+                
                 editBtn.disabled = true;
                 editBtn.classList.remove('btn-primary');
                 editBtn.style.background = '#6c757d';
@@ -237,7 +237,7 @@
         if (cancelEditBtn) {
             cancelEditBtn.addEventListener('click', function (e) {
                 e.preventDefault();
-                // Restore original name and disable input
+                
                 if (nameInput) {
                     nameInput.value = originalName;
                     nameInput.disabled = true;
@@ -245,7 +245,7 @@
                 if (profileActions) {
                     profileActions.style.display = 'none';
                 }
-                // Enable edit button again
+                
                 if (editBtn) {
                     editBtn.disabled = false;
                     editBtn.classList.add('btn-primary');
@@ -255,6 +255,6 @@
             });
         }
 
-        // saveNameBtn is a submit button inside the form; we let the form submit normally.
+        
     });
 </script>

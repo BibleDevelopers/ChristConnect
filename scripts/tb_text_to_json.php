@@ -1,8 +1,8 @@
 <?php
-// Simple TB plaintext -> JSON converter.
-// Usage: php scripts/tb_text_to_json.php /path/to/tb.txt > database/seeders/data/tb.json
-// The converter expects lines that include verse markers like: "Genesis 1:1 In the beginning..."
-// It will try to normalize book names to lowercase underscores like 'genesis', 'song_of_songs'.
+
+
+
+
 
 if ($argc < 2) {
     fwrite(STDERR, "Usage: php tb_text_to_json.php /path/to/tb.txt\n");
@@ -23,7 +23,7 @@ foreach ($lines as $raw) {
     $line = trim($raw);
     if ($line === '') continue;
 
-    // Try to match patterns like: "Genesis 1:1 ..." or "1:1 ..." when book context set
+    
     if (preg_match('/^([A-Za-z\s]+)\s+(\d+):(\d+)\s+(.*)$/u', $line, $m)) {
         $book = trim($m[1]);
         $chapter = (int)$m[2];
@@ -40,7 +40,7 @@ foreach ($lines as $raw) {
         continue;
     }
 
-    // Try to match when book already known: "1:1 ..."
+    
     if (preg_match('/^(\d+):(\d+)\s+(.*)$/', $line, $m) && $currentBook) {
         $chapter = (int)$m[1];
         $verse = (int)$m[2];
@@ -54,7 +54,7 @@ foreach ($lines as $raw) {
         continue;
     }
 
-    // If none of the above, treat as continuation of previous verse
+    
     if (!empty($entries)) {
         $last = array_pop($entries);
         $last['text'] = $last['text'] . ' ' . $line;
@@ -63,5 +63,5 @@ foreach ($lines as $raw) {
     }
 }
 
-// Output JSON array
+
 echo json_encode($entries, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);

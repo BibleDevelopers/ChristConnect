@@ -6,23 +6,19 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
+    
     public function up(): void
     {
-       // ..._create_wallets_table.php
+       
     Schema::create('wallets', function (Blueprint $table) {
         $table->id();
         $table->foreignId('user_id')->constrained()->onDelete('cascade');
-        $table->bigInteger('balance')->default(0); // Rp 10.000 disimpan sebagai 10000
+        $table->bigInteger('balance')->default(0); 
         $table->timestamps();
     });
     }
 
-    /**
-     * Reverse the migrations.
-     */
+    
     public function down(): void
     {
         Schema::dropIfExists('wallets');

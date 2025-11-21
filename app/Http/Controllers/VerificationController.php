@@ -13,7 +13,7 @@ class VerificationController extends Controller
 {
     public function show(Request $request)
     {
-        // allow pre-filling email via query param (from registration)
+        
         $email = $request->query('email', '');
         return view('auth.verify_code', compact('email'));
     }
@@ -44,7 +44,7 @@ class VerificationController extends Controller
         $user->email_verification_expires_at = null;
         $user->save();
 
-        // Login user if not already logged in
+        
         if (!Auth::check()) {
             Auth::login($user);
         }
@@ -66,7 +66,7 @@ class VerificationController extends Controller
         $user->email_verification_expires_at = Carbon::now()->addMinutes(15);
         $user->save();
 
-        // send email
+        
         Mail::to($user->email)->send(new EmailVerificationCode($code, $user->name));
 
         return back()->with('status', 'verification-code-resent');
