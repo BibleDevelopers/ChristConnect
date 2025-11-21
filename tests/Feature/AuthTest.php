@@ -18,7 +18,7 @@ class AuthTest extends TestCase
         $this->withoutMiddleware(VerifyCsrfToken::class);
     }
 
-    
+    /** @test */
     public function a_user_can_view_the_login_form()
     {
         $response = $this->get('/login');
@@ -26,7 +26,7 @@ class AuthTest extends TestCase
         $response->assertSee('Login');
     }
 
-    
+    /** @test */
     public function a_user_can_login_with_correct_credentials()
     {
         $user = User::factory()->create([
@@ -43,7 +43,7 @@ class AuthTest extends TestCase
         $this->assertAuthenticatedAs($user);
     }
 
-    
+    /** @test */
     public function a_user_cannot_login_with_incorrect_credentials()
     {
         $user = User::factory()->create([
@@ -60,7 +60,7 @@ class AuthTest extends TestCase
         $this->assertGuest();
     }
 
-    
+    /** @test */
     public function a_user_can_view_the_registration_form()
     {
         $response = $this->get('/register');
@@ -68,7 +68,7 @@ class AuthTest extends TestCase
         $response->assertSee('Register');
     }
 
-    
+    /** @test */
     public function a_user_can_register()
     {
         $response = $this->post('/register', [
@@ -85,7 +85,7 @@ class AuthTest extends TestCase
         $this->assertAuthenticated();
     }
 
-    
+    /** @test */
     public function a_user_cannot_register_with_existing_email()
     {
         User::factory()->create([

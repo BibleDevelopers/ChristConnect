@@ -36,18 +36,18 @@ class RegisterController extends Controller
             'password' => Hash::make($request->password),
         ]);
         
-        
+        // Wallet dengan saldo 0 sudah otomatis dibuat oleh User::booted()
 
-        
+        // generate 6-digit verification code and send via email
         $code = (string) random_int(100000, 999999);
         $user->email_verification_code = $code;
         $user->email_verification_expires_at = now()->addMinutes(15);
         $user->save();
 
-        
+        // send verification code email
         \Illuminate\Support\Facades\Mail::to($user->email)->send(new \App\Mail\EmailVerificationCode($code, $user->name));
 
-        
+        // redirect user to the verification code form (do not auto-login)
         return redirect()->route('verification.code.show', ['email' => $user->email])->with('status', 'verification-code-sent');
     }
 }

@@ -10,22 +10,22 @@ class BadgeService
     private const BADGES = [
         [
             'name' => 'Bronze Donor',
-            'min' => 1, 
+            'min' => 1, // Rp1 (minimal donate)
             'icon' => null,
         ],
         [
             'name' => 'Silver Donor',
-            'min' => 1_000_000, 
+            'min' => 1_000_000, // Rp1.000.000
             'icon' => null,
         ],
         [
             'name' => 'Gold Donor',
-            'min' => 50_000_000, 
+            'min' => 50_000_000, // Rp50.000.000
             'icon' => null,
         ],
         [
             'name' => 'Platinum Donor',
-            'min' => 100_000_000, 
+            'min' => 100_000_000, // Rp100.000.000
             'icon' => null,
         ],
     ];
@@ -34,7 +34,7 @@ class BadgeService
     {
         $total = $user->total_donated ?? 0;
 
-        
+        // Temukan badge tertinggi yang user qualify
         $highestBadge = null;
         foreach (self::BADGES as $data) {
             $badge = Badge::firstOrCreate(
@@ -47,7 +47,7 @@ class BadgeService
             }
         }
 
-        
+        // Lepas semua badge donor lama
         $user->badges()->detach(
             Badge::whereIn('name', [
                 'Bronze Donor',
@@ -57,7 +57,7 @@ class BadgeService
             ])->pluck('id')
         );
 
-        
+        // Attach hanya badge tertinggi
         if ($highestBadge) {
             $user->badges()->attach($highestBadge->id);
         }

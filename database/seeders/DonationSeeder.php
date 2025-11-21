@@ -9,7 +9,7 @@ class DonationSeeder extends Seeder
 {
     public function run(): void
     {
-        
+        // If a donations table doesn't exist, skip gracefully
         try {
             if (!\Schema::hasTable('donations')) {
                 $this->command->info('Skipping donations seeder: table `donations` not found.');
@@ -22,7 +22,7 @@ class DonationSeeder extends Seeder
 
         $now = now();
 
-        
+        // Use the four donation campaigns shown in the donations view (Indonesian titles)
         $items = [
             [
                 'title' => 'Renovasi Gereja Abraham',
@@ -66,7 +66,7 @@ class DonationSeeder extends Seeder
             ],
         ];
 
-        
+        // Avoid duplicate slugs: insert only those that don't exist
         foreach ($items as $item) {
             $exists = DB::table('donations')->where('slug', $item['slug'])->exists();
             if ($exists) continue;

@@ -27,6 +27,21 @@ services:
     networks:
       - laravel
 
+  # db:
+  #   image: mysql:8.0
+  #   container_name: laravel_db
+  #   restart: unless-stopped
+  #   environment:
+  #     MYSQL_DATABASE: laravel
+  #     MYSQL_ROOT_PASSWORD: root
+  #     MYSQL_USER: laravel
+  #     MYSQL_PASSWORD: laravel
+  #   volumes:
+  #     - db_data:/var/lib/mysql
+  #   ports:
+  #     - "3306:3306"
+  #   networks:
+  #     - laravel
 
 networks:
   laravel:

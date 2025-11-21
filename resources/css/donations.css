@@ -1,5 +1,6 @@
 body.donations-page {
-    
+    /* background: linear-gradient(135deg, #fff6e5, #ffe3b3);
+     */
     background: #e5e5e5;
     color: #3a2500;
     font-family: 'Playfair Display', serif;
@@ -16,14 +17,14 @@ body.donations-page {
     text-align: center;
 }
 
-
+/* New: donation grid container */
 .donations-grid {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    
+    /* centers horizontally */
     gap: 1.5rem;
-    
+    /* space between cards */
 }
 
 .donation-option-btn {
@@ -53,19 +54,22 @@ body.donations-page {
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
 }
 
-
+/* Donation cards */
 .card {
     background: #fff;
     border-radius: 15px;
     padding: 1.5rem;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     width: 320px;
-    
+    /* fixed width for consistent layout */
     text-align: left;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-
+/* .card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+} */
 
 .card-link {
     text-decoration: none;
@@ -83,7 +87,7 @@ body.donations-page {
     color: #a66300;
 }
 
-
+/* Buttons */
 .btn-success {
     background: #f29d35;
     border: none;
@@ -115,19 +119,19 @@ body.donations-page {
     transform: translateY(-3px);
 }
 
-
+/* Manage Button */
 .manage-btn {
     display: block;
     width: 100%;
     background-color: #f29d35 !important;
-    
+    /* override bootstrap */
     border: none !important;
     color: white !important;
     font-weight: 600;
     border-radius: 8px;
     padding: 0.75rem 1rem;
     margin-top: 1rem;
-    
+    /* creates gap from text above */
     text-align: center;
     text-decoration: none;
     transition: all 0.2s ease-in-out;

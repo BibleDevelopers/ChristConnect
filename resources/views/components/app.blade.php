@@ -5,11 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ChristConnect</title>
 
-    <link href="https:
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Open+Sans&display=swap" rel="stylesheet">
     <link href="{{ asset('css/styles.css') }}" rel="stylesheet">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
-    
+    {{-- Dynamically include donations.css if this is a donations page --}}
     @if (Str::startsWith(Route::currentRouteName(), 'donations'))
         @vite(['resources/css/donations.css'])
     @endif

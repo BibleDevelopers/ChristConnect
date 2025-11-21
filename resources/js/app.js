@@ -1,7 +1,7 @@
 import "./bootstrap";
 import "../images/logo.png";
 
-
+// Alkitab Page Script
 document.addEventListener("DOMContentLoaded", function () {
     const alkitabContainer = document.querySelector(".alkitab-container");
     if (!alkitabContainer) return;

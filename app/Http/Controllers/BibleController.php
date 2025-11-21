@@ -42,7 +42,7 @@ class BibleController extends Controller
             'verse' => $verse
         ];
 
-        $response = Http::post('http:
+        $response = Http::post('http://localhost:3000/', [
             'query' => $query,
             'variables' => $variables
         ]);

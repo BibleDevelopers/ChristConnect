@@ -8,7 +8,7 @@
         .trash-btn:hover { color:#991b1b; }
     </style>
 
-    <link rel="stylesheet" href="https:
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <div class="admin-users-card">
         <h1>Manage Users</h1>
@@ -74,4 +74,4 @@
     </div>
 </x-app>
 
-
+{{-- view di-nonaktifkan sementara --}}

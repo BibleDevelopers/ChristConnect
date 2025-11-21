@@ -9,14 +9,14 @@ use Illuminate\Support\Facades\Auth;
 
 class RenunganController extends Controller
 {
-    
+    // show paginated list
     public function index()
     {
         $posts = Renungan::with('user.badges')->latest()->paginate(10);
         return view('renungan.renungan', compact('posts'));
     }
 
-    
+    // show single post + comments
     public function show(Renungan $renungan)
     {
         $renungan->load('user.badges');
@@ -26,15 +26,15 @@ class RenunganController extends Controller
         return view('renungan.show', compact('renungan', 'comments'));
     }
 
-    
+    // store a new post
     public function store(Request $request)
     {
         $request->validate([
             'title' => 'required|string|max:255',
-            'content' => 'required|string|max:5000', 
+            'content' => 'required|string|max:5000', // batasi panjang
         ]);
 
-        
+        // sanitasi dasar: hapus tag berbahaya, izinkan beberapa tag formatting jika perlu
         $cleanContent = strip_tags($request->content, '<p><br><strong><em><ul><ol><li><a>');
 
         $post = Renungan::create([
@@ -46,14 +46,14 @@ class RenunganController extends Controller
         return redirect()->route('renungan.show', $post)->with('success', 'Renungan dibuat.');
     }
 
-    
+    // add comment to a post
     public function comment(Request $request, Renungan $renungan)
     {
         $request->validate([
             'content' => 'required|string|max:2000',
         ]);
 
-        
+        // sanitasi komentar
         $cleanComment = strip_tags($request->content);
 
         $renungan->comments()->create([

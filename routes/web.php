@@ -11,21 +11,21 @@ use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Route;
 
 
-
+//Landing Page
 Route::get('/', function () {
     return view('welcome');
 })->middleware('guest');
 
-
+//Login Page
 Route::get('login', function () {
     return view('auth.login');
 })->name('login')->middleware('guest');
 
 Route::post('login', [LoginController::class, 'login'])
     ->name('login.attempt')
-    ->middleware(['guest', 'throttle:5,1']); 
+    ->middleware(['guest', 'throttle:5,1']); // max 5 attempts per minute
 
-
+//Register Page
 Route::get('register', function (){
     return view('auth.registration');
 })->name('register')->middleware('guest');
@@ -34,12 +34,12 @@ Route::post('register', [App\Http\Controllers\RegisterController::class, '__invo
 ->name('register.attempt')
 ->middleware(['guest', 'throttle:5,1']);
 
-
+// Verification by 6-digit code (after registration)
 Route::get('verify-code', [App\Http\Controllers\VerificationController::class, 'show'])->name('verification.code.show');
 Route::post('verify-code', [App\Http\Controllers\VerificationController::class, 'verify'])->name('verification.code.verify');
 Route::post('verify-resend', [App\Http\Controllers\VerificationController::class, 'resend'])->name('verification.code.resend');
 
-
+//Logout
 Route::post('logout', function () {
     Auth::guard('web')->logout();
 
@@ -48,9 +48,9 @@ Route::post('logout', function () {
 
     return redirect('/');
 })->name('logout');
-
-
-
+//Dashboard
+//Route::view('dashboard', 'dashboard')->name('dashboard')->middleware(['auth', 'verified']);
+// Dashboard (Protected) - Jep
 Route::get('/dashboard', [DashboardController::class, 'index'])
     ->middleware(['auth', 'verified', 'prevent.back'])
     ->name('dashboard');
@@ -67,19 +67,19 @@ Route::get('/renungan', [RenunganController::class, 'index'])
     ->middleware(['auth', 'verified'])
     ->name('renungan.update');
 
-
+// show single renungan
 Route::get('/renungan-harian/{renungan}', [RenunganController::class, 'show'])
     ->middleware(['auth', 'verified'])
     ->name('renungan.show');
 
-
+// store new renungan (post) — batasi rate untuk mencegah spam
 Route::post('/renungan-harian', [RenunganController::class, 'store'])
-    ->middleware(['auth', 'verified', 'throttle:10,1']) 
+    ->middleware(['auth', 'verified', 'throttle:10,1']) // max 10 requests per minute per user/ip
     ->name('renungan.store');
 
-
+// add comment to renungan — batasi juga
 Route::post('/renungan-harian/{renungan}/comment', [RenunganController::class, 'comment'])
-    ->middleware(['auth', 'verified', 'throttle:20,1']) 
+    ->middleware(['auth', 'verified', 'throttle:20,1']) // max 20 comments per minute
     ->name('renungan.comment');
 
 Route::delete('/renungan-harian/{renungan}', [RenunganController::class, 'destroy'])
@@ -92,7 +92,7 @@ Route::delete('/renungan-harian/{renungan}/comment/{comment}', [RenunganControll
 
 
 Route::middleware(['auth', 'verified', 'prevent.back'])->group(function () {
-    
+    //Donation
     Route::get('/donations', [DonationController::class, 'index'])->name('donations.index');
     Route::get('/profile', function () {
         $user = Auth::user()->refresh()->load('badges', 'wallet');
@@ -120,13 +120,13 @@ Route::middleware(['auth', 'verified', 'prevent.back'])->group(function () {
     });
 });
 
-
+// Clicking on donate button
 Route::post('/donations/{donation}/donate', [DonationController::class, 'donate'])
     ->name('donations.donate')
     ->middleware(['auth', 'verified']);
 
 
-
+// Email verification
 Route::get('/email/verify', function () {
     return view('auth.verification-notice');
 })->middleware('auth')->name('verification.notice');
@@ -146,6 +146,6 @@ Route::get('alkitab', [AlkitabController::class, 'index'])
     ->name('alkitab');
 
 
-
+// Internal API untuk Alkitab
 Route::get('/api/alkitab/{version}/{book}/{chapter}', [AlkitabController::class, 'getChapter']);
 Route::get('/api/alkitab/search/{version}', [AlkitabController::class, 'search']);

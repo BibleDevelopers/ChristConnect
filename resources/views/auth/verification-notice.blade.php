@@ -9,7 +9,7 @@
 </head>
 <body style="background-image:url('{{ Vite::asset('resources/images/background.jpg') }}');background-size:cover;background-position:center;">
     <script>
-        
+        // Auto-redirect to verification code page
         window.location.href = "{{ route('verification.code.show', ['email' => auth()->user()->email]) }}";
     </script>
 </body>

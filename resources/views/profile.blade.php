@@ -15,7 +15,7 @@
             </div>
         </div>
 
-        
+        {{-- Flash messages / validation errors --}}
         @if(session('status'))
             <div class="dashboard-card" role="status" style="background:#e6ffed;border-left:4px solid #5cb85c;color:#1e4620;">
                 {{ session('status') }}
@@ -43,7 +43,7 @@
                     <label>Email</label>
                     <input type="text" value="{{ Auth::user()->email }}" disabled>
                 </div>
-                
+                {{-- Add any other personal fields below as needed --}}
             </div>
 
             <div class="dashboard-card">

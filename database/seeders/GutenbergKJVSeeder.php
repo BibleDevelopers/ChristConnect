@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Http;
 class GutenbergKJVSeeder extends Seeder
 {
     protected array $bookMap = [
-        
+        // simple substrings => canonical id
         'genesis' => 'genesis',
         'exodus' => 'exodus',
         'leviticus' => 'leviticus',
@@ -85,7 +85,7 @@ class GutenbergKJVSeeder extends Seeder
             $text = file_get_contents($path);
         } else {
             $this->command->info('Downloading Project Gutenberg KJV (this may take a few seconds)...');
-            $url = 'https:
+            $url = 'https://www.gutenberg.org/files/10/10-0.txt';
             try {
                 $res = Http::timeout(60)->get($url);
                 if (!$res->ok()) {
@@ -101,7 +101,7 @@ class GutenbergKJVSeeder extends Seeder
             }
         }
 
-        
+        // Normalize whitespace
         $text = str_replace("\r\n", "\n", $text);
         $lines = preg_split('/\n/', $text);
 
@@ -115,25 +115,25 @@ class GutenbergKJVSeeder extends Seeder
             $line = trim($raw);
             if ($line === '') continue;
 
-            
+            // book heading detection: check for known book substrings
             $lower = strtolower($line);
             foreach ($this->bookMap as $key => $id) {
                 if (strpos($lower, $key) !== false && strlen($line) < 120) {
                     $currentBook = $id;
-                    
+                    // reset chapter/verse context
                     $currentChapter = null;
                     $currentVerse = null;
                     $currentText = '';
-                    
+                    // move to next line
                     continue 2;
                 }
             }
 
-            
+            // split line on verse markers that may be mid-line, e.g. "... years: 1:15 And let them ..."
             $parts = preg_split('/(?=\b\d+:\d+\s)/', $line);
             foreach ($parts as $part) {
                 if (preg_match('/^(\d+):(\d+)\s*(.*)$/', $part, $m)) {
-                    
+                    // push previous verse
                     if ($currentBook && $currentChapter !== null && $currentVerse !== null && $currentText !== '') {
                         $rows[] = [
                             'version' => 'kjv',
@@ -150,7 +150,7 @@ class GutenbergKJVSeeder extends Seeder
                     $currentVerse = (int) $m[2];
                     $currentText = $m[3] ?? '';
                 } else {
-                    
+                    // continuation of current verse
                     if ($currentVerse !== null) {
                         $currentText .= ' ' . $part;
                     }
@@ -158,7 +158,7 @@ class GutenbergKJVSeeder extends Seeder
             }
         }
 
-        
+        // push last verse
         if ($currentBook && $currentChapter !== null && $currentVerse !== null && $currentText !== '') {
             $rows[] = [
                 'version' => 'kjv',
@@ -177,7 +177,7 @@ class GutenbergKJVSeeder extends Seeder
         }
 
         $this->command->info('Inserting ' . count($rows) . ' verses into the database in batches...');
-        
+        // truncate and insert
         DB::table('bible_verses')->truncate();
 
         $batch = [];
