@@ -23,31 +23,17 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         try {
+            // Do not auto-create privileged accounts at application boot. Creating
+            // administrator credentials automatically can leak predictable or
+            // development credentials into production environments and is a
+            // security risk. Use an explicit CLI command or a secure seeder that
+            // reads credentials from protected environment variables to create
+            // administrators when needed.
             if (Schema::hasTable('users')) {
-                $admin = User::firstOrCreate(
-                    ['email' => 'admin@christ.connect'],
-                    [
-                        'name' => 'admin',
-                        'password' => Hash::make('Chr1stConn3ct'),
-                        'role' => 'admin',
-                        'email_verified_at' => now(), // Already verified
-                    ]
-                );
-
-                // Ensure admin email is verified (for existing admin accounts)
-                if (!$admin->hasVerifiedEmail()) {
-                    $admin->email_verified_at = now();
-                    $admin->save();
-                }
-
-                // Ensure admin has a wallet
-                if (!$admin->wallet()->exists()) {
-                    $admin->wallet()->create(['balance' => 0]);
-                }
+                // No automated admin creation here.
             }
         } catch (\Exception $e) {
             // If the database is not available during boot, skip DB-dependent bootstrapping.
-            // This prevents artisan/console commands from failing when the DB is down.
             return;
         }
 
