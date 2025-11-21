@@ -42,21 +42,14 @@
 
 **Admin account (security)**
 
-This project no longer creates a default administrator account automatically.
-Create an admin explicitly using the artisan command below. You can pass
-`--email` and `--password`. If you omit `--password`, the command will
-generate a secure random password and (by default) save it to
-`storage/app/admin-credentials.txt` with restrictive permissions.
+This project does not create administrator accounts automatically. Administrator
+accounts must be created through an internal, out-of-band process by the
+project operators. The previous CLI helper has been removed to prevent
+convenience commands from being used to create privileged accounts.
 
-```bash
-php artisan make:admin --email=admin@example.com
-# Provide your own password
-php artisan make:admin --email=admin@example.com --password="StrongP@ssw0rd"
-# Generate a password but avoid saving it to disk
-php artisan make:admin --email=admin@example.com --no-save
-```
-
-After creating the admin, remove or secure the credentials file if present.
+If you need an administrator for development or deployment, create the user
+manually in your production identity provider or run a secure migration on a
+trusted machine (do not expose admin creation to regular application users).
 
 8. **Install JavaScript dependencies using NPM:**
    ```bash
