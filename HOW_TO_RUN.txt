@@ -40,17 +40,6 @@
    php artisan db:seed
    ```
 
-**Admin account (security)**
-
-This project does not create administrator accounts automatically. Administrator
-accounts must be created through an internal, out-of-band process by the
-project operators. The previous CLI helper has been removed to prevent
-convenience commands from being used to create privileged accounts.
-
-If you need an administrator for development or deployment, create the user
-manually in your production identity provider or run a secure migration on a
-trusted machine (do not expose admin creation to regular application users).
-
 8. **Install JavaScript dependencies using NPM:**
    ```bash
    npm install
