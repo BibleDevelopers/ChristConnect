@@ -4,8 +4,7 @@
         
         <div class="controls-wrapper">
             <select id="version-select">
-                <option value="tb">Indonesia (TB)</option>
-                <option value="kjv">English (KJV)</option>
+                <option value="kjv" selected>English (KJV)</option>
             </select>
             <select id="book-select">
                 <option value="">Select Book</option>
