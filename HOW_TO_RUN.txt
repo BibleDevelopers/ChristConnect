@@ -40,6 +40,24 @@
    php artisan db:seed
    ```
 
+**Admin account (security)**
+
+This project no longer creates a default administrator account automatically.
+Create an admin explicitly using the artisan command below. You can pass
+`--email` and `--password`. If you omit `--password`, the command will
+generate a secure random password and (by default) save it to
+`storage/app/admin-credentials.txt` with restrictive permissions.
+
+```bash
+php artisan make:admin --email=admin@example.com
+# Provide your own password
+php artisan make:admin --email=admin@example.com --password="StrongP@ssw0rd"
+# Generate a password but avoid saving it to disk
+php artisan make:admin --email=admin@example.com --no-save
+```
+
+After creating the admin, remove or secure the credentials file if present.
+
 8. **Install JavaScript dependencies using NPM:**
    ```bash
    npm install
