@@ -13,6 +13,20 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        // Try to import Gutenberg/KJV/TB. Only seed the small sample if the table
+        // remains empty after the importers (acts as a last-resort fallback).
+        $this->call([
+            \Database\Seeders\GutenbergKJVSeeder::class,
+            \Database\Seeders\KJVImportSeeder::class,
+            // TBImportSeeder removed/optional
+        ]);
+
+        // If imports did not populate the `bible_verses` table, seed the small sample.
+        if (\DB::table('bible_verses')->count() === 0) {
+            $this->call(\Database\Seeders\BibleDatabaseSeeder::class);
+        }
+
+        // Seed donation boxes (if table exists)
+        $this->call(\Database\Seeders\DonationSeeder::class);
     }
 }
