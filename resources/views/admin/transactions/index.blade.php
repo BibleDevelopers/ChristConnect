@@ -4,6 +4,34 @@
         .admin-transactions-card table { width:100%;border-collapse:collapse;margin-top:1rem; }
         .admin-transactions-card th, .admin-transactions-card td { padding:0.75rem;border-bottom:1px solid #f0f0f0;text-align:left; }
         .admin-transactions-card th { background:#f7f7f7;font-weight:600; }
+
+        /* Fix: constrain pagination icons/images so they don't render huge when global CSS isn't applied */
+        .admin-transactions-card .pagination,
+        .admin-transactions-card nav[role="navigation"] {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: center;
+            align-items: center;
+            margin-top: 1rem;
+        }
+        .admin-transactions-card .pagination svg,
+        .admin-transactions-card nav[role="navigation"] svg,
+        .admin-transactions-card .pagination img,
+        .admin-transactions-card nav[role="navigation"] img {
+            width: 1.25rem !important;
+            height: 1.25rem !important;
+            max-width: 1.25rem !important;
+            max-height: 1.25rem !important;
+            vertical-align: middle;
+            display: inline-block;
+        }
+
+        /* Ensure page number items look reasonable without tailwind */
+        .admin-transactions-card .pagination .page-item,
+        .admin-transactions-card nav[role="navigation"] .page-item {
+            display: inline-block;
+            margin: 0 .25rem;
+        }
     </style>
 
     <div class="admin-transactions-card">
