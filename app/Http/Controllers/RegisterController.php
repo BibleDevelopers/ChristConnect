@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\Auth\Events\Registered;
 
@@ -44,8 +44,13 @@ class RegisterController extends Controller
         $user->email_verification_expires_at = now()->addMinutes(15);
         $user->save();
 
-        // send verification code email
-        \Illuminate\Support\Facades\Mail::to($user->email)->send(new \App\Mail\EmailVerificationCode($code, $user->name));
+        // send verification code email synchronously
+        try {
+            // send synchronously to avoid requiring a queue worker for critical auth emails
+            Mail::to($user->email)->send(new \App\Mail\EmailVerificationCode($code, $user->name));
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::error('Verification email send failed (register)', ['user_id' => $user->id, 'error' => $e->getMessage()]);
+        }
 
         // redirect user to the verification code form (do not auto-login)
         return redirect()->route('verification.code.show', ['email' => $user->email])->with('status', 'verification-code-sent');

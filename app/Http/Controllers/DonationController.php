@@ -98,6 +98,11 @@ class DonationController extends Controller
             'amount' => 'required|integer|min:1000|max:1000000000',
         ]);
 
+        // Ensure authenticated (defensive)
+        if (!Auth::check()) {
+            return redirect()->route('login');
+        }
+
         $user = Auth::user();
         $amount = (int) $request->input('amount');
         if ($amount <= 0) {
@@ -109,6 +114,11 @@ class DonationController extends Controller
                 
                 // 1. Ambil wallet user & KUNCI (agar aman dari double-spending)
                 $wallet = $user->wallet()->lockForUpdate()->first();
+
+                // Defensive: ensure wallet exists
+                if (!$wallet) {
+                    throw new \Exception('Wallet tidak ditemukan. Silakan hubungi dukungan.');
+                }
 
                 // 2. Cek Saldo
                 if ($wallet->balance < $amount) {

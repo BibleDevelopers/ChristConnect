@@ -8,6 +8,9 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\ValidationException;
 
 class VerificationController extends Controller
 {
@@ -35,7 +38,8 @@ class VerificationController extends Controller
             return back()->withErrors(['code' => 'Invalid verification code.']);
         }
 
-        if ($user->email_verification_expires_at->isPast()) {
+        // defensive: handle null/empty expires_at
+        if (empty($user->email_verification_expires_at) || Carbon::parse($user->email_verification_expires_at)->isPast()) {
             return back()->withErrors(['code' => 'Verification code has expired.']);
         }
 
@@ -56,8 +60,20 @@ class VerificationController extends Controller
     {
         $request->validate([ 'email' => ['required','email'] ]);
 
-        $user = User::where('email', $request->email)->first();
+        $email = (string)$request->input('email');
+        $key = 'verify-resend|' . strtolower($email) . '|' . $request->ip();
+        $maxAttempts = 3;
+        $decaySeconds = 600; // 10 minutes
+
+        if (RateLimiter::tooManyAttempts($key, $maxAttempts)) {
+            $seconds = RateLimiter::availableIn($key);
+            Log::warning("Verification resend rate limit reached for {$email}", ['email' => $email, 'ip' => $request->ip()]);
+            throw ValidationException::withMessages(['email' => "Terlalu sering meminta kode. Coba lagi setelah $seconds detik."]);
+        }
+
+        $user = User::where('email', $email)->first();
         if (!$user) {
+            RateLimiter::hit($key, $decaySeconds);
             return back()->withErrors(['email' => 'Alamat email tidak ditemukan.']);
         }
 
@@ -66,8 +82,14 @@ class VerificationController extends Controller
         $user->email_verification_expires_at = Carbon::now()->addMinutes(15);
         $user->save();
 
-        // send email
-        Mail::to($user->email)->send(new EmailVerificationCode($code, $user->name));
+        // send email synchronously for reliable delivery (fallback to logs on failure)
+        try {
+            Mail::to($user->email)->send(new EmailVerificationCode($code, $user->name));
+        } catch (\Throwable $e) {
+            Log::error('Verification resend email send failed', ['email' => $user->email, 'error' => $e->getMessage()]);
+        }
+
+        RateLimiter::hit($key, $decaySeconds);
 
         return back()->with('status', 'verification-code-resent');
     }

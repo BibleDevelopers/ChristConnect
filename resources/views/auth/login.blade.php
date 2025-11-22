@@ -7,6 +7,8 @@
     switchLinkText="Register here"
 >
     {{-- Slot for form fields --}}
+    @csrf
+
     <div class="form-group">
         <label for="email">Email Address</label>
         <input id="email" type="email" name="email" required autofocus>

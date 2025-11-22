@@ -37,7 +37,11 @@ Route::post('register', [App\Http\Controllers\RegisterController::class, '__invo
 // Verification by 6-digit code (after registration)
 Route::get('verify-code', [App\Http\Controllers\VerificationController::class, 'show'])->name('verification.code.show');
 Route::post('verify-code', [App\Http\Controllers\VerificationController::class, 'verify'])->name('verification.code.verify');
-Route::post('verify-resend', [App\Http\Controllers\VerificationController::class, 'resend'])->name('verification.code.resend');
+
+// Verification resend (rate-limited)
+Route::post('verify-resend', [App\Http\Controllers\VerificationController::class, 'resend'])
+    ->name('verification.code.resend')
+    ->middleware(['throttle:3,10']);
 
 //Logout
 Route::post('logout', function () {
@@ -147,5 +151,8 @@ Route::get('alkitab', [AlkitabController::class, 'index'])
 
 
 // Internal API untuk Alkitab
-Route::get('/api/alkitab/{version}/{book}/{chapter}', [AlkitabController::class, 'getChapter']);
-Route::get('/api/alkitab/search/{version}', [AlkitabController::class, 'search']);
+Route::get('/api/alkitab/{version}/{book}/{chapter}', [AlkitabController::class, 'getChapter'])
+    ->middleware('throttle:60,1'); // 60 requests per minute
+
+Route::get('/api/alkitab/search/{version}', [AlkitabController::class, 'search'])
+    ->middleware('throttle:60,1'); // 60 requests per minute

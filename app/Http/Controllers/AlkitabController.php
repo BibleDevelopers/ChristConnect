@@ -48,13 +48,19 @@ class AlkitabController extends Controller
 
     public function search(Request $request, $version)
     {
-        $query = $request->input('q');
+        $query = (string) $request->input('q');
         $book = $request->input('book');
         $chapter = $request->input('chapter');
 
         if (empty($query)) {
             return response()->json([]);
         }
+
+        // limit length to avoid expensive queries
+        $query = mb_substr($query, 0, 200);
+
+        // escape SQL LIKE wildcards % and _ and backslash
+        $escaped = str_replace(['\\', '%', '_'], ['\\\\', '\\%', '\\_'], $query);
 
         $service = new AlkitabService();
         if ($service->available()) {
@@ -67,7 +73,7 @@ class AlkitabController extends Controller
 
         $dbQuery = DB::table('bible_verses')
             ->where('version', $version)
-            ->where('text', 'LIKE', "%{$query}%");
+            ->where('text', 'LIKE', "%{$escaped}%");
 
         if ($book) {
             $dbQuery->where('book', $book);

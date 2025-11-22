@@ -42,25 +42,32 @@ class BibleController extends Controller
             'verse' => $verse
         ];
 
-        $response = Http::post('http://localhost:3000/', [
-            'query' => $query,
-            'variables' => $variables
-        ]);
+        try {
+            // Set a reasonable timeout so the request can't hang indefinitely
+            $response = Http::timeout(5)->post('http://localhost:3000/', [
+                'query' => $query,
+                'variables' => $variables
+            ]);
+        } catch (\Throwable $e) {
+            // Log if you have logging configured; return generic error to user
+            return back()->with('error', 'Gagal terhubung ke server Alkitab.');
+        }
 
         if ($response->failed()) {
             return back()->with('error', 'Gagal terhubung ke server Alkitab.');
         }
 
         $data = $response->json();
-        $verses = $data['data']['passages']['verses'] ?? [];
 
-        if (empty($verses)) {
+        // Defensive: ensure expected structure exists
+        $verses = $data['data']['passages']['verses'] ?? null;
+        if (!is_array($verses) || empty($verses)) {
             return back()->with('error', 'Ayat tidak ditemukan.');
         }
 
         $fullText = '';
         foreach ($verses as $v) {
-            if ($v['type'] === 'content') {
+            if (isset($v['type']) && $v['type'] === 'content' && isset($v['content'])) {
                 $fullText .= $v['content'] . ' ';
             }
         }

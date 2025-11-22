@@ -72,7 +72,7 @@
                                         @endif
                                         <span>— {{ $post->created_at->diffForHumans() }}</span>
                                     </div>
-                                    <p style="margin-top:.5rem;color:#333;">{{ Str::limit($post->content, 220) }}</p>
+                                    <p style="margin-top:.5rem;color:#333;">{{ Str::limit(strip_tags($post->content), 220) }}</p>
                                 </div>
                                 <div style="display:flex;flex-direction:column;gap:.5rem;align-items:flex-end;">
                                     @if(auth()->check() && (auth()->id() === $post->user_id || auth()->user()->role === 'admin'))
