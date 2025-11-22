@@ -7,6 +7,8 @@
     switchLinkText="Login here"
 >
     {{-- Slot for form fields --}}
+    @csrf
+
     <div class="form-group">
         <label for="name">Full Name</label>
         <input id="name" type="text" name="name" value="{{ old('name') }}" required autofocus>

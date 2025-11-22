@@ -37,7 +37,11 @@ Route::post('register', [App\Http\Controllers\RegisterController::class, '__invo
 // Verification by 6-digit code (after registration)
 Route::get('verify-code', [App\Http\Controllers\VerificationController::class, 'show'])->name('verification.code.show');
 Route::post('verify-code', [App\Http\Controllers\VerificationController::class, 'verify'])->name('verification.code.verify');
-Route::post('verify-resend', [App\Http\Controllers\VerificationController::class, 'resend'])->name('verification.code.resend');
+
+// Verification resend (rate-limited)
+Route::post('verify-resend', [App\Http\Controllers\VerificationController::class, 'resend'])
+    ->name('verification.code.resend')
+    ->middleware(['throttle:3,10']);
 
 //Logout
 Route::post('logout', function () {
@@ -104,16 +108,20 @@ Route::middleware(['auth', 'verified', 'prevent.back'])->group(function () {
     Route::post('/wallet/withdraw', [\App\Http\Controllers\WalletController::class, 'withdraw'])->name('wallet.withdraw');
 
     Route::post('/profile/update-name', [App\Http\Controllers\ProfileController::class, 'updateName'])->name('profile.updateName');
-    Route::post('/profile/change-password', [App\Http\Controllers\ProfileController::class, 'changePassword'])->name('profile.changePassword');
+    Route::post('/profile/change-password', [App\Http\Controllers\ProfileController::class, 'changePassword'])
+        ->name('profile.changePassword')
+        ->middleware('throttle:5,1'); // limit change-password attempts (5 per minute)
 
     Route::get('/donations/create', [DonationController::class, 'create'])->name('donations.create');
     Route::post('/donations', [DonationController::class, 'store'])->name('donations.store');
-    Route::get('/donations/{donation}/detail', [DonationController::class, 'detail'])->name('donations.detail');
+    Route::get('/donations/{donation}/detail', [DonationController::class, 'detail'])
+    ->name('donations.detail')
+    ->middleware('admin'); // ensure only admins can call this route
     Route::get('/donations/{donation}/edit', [DonationController::class, 'edit'])->name('donations.edit');
     Route::put('/donations/{donation}', [DonationController::class, 'update'])->name('donations.update');
     Route::delete('/donations/{donation}', [DonationController::class, 'destroy'])->name('donations.destroy');
 
-    Route::prefix('admin')->name('admin.')->middleware('admin')->group(function () {
+    Route::prefix('admin')->name('admin.')->middleware(['admin','throttle:30,1'])->group(function () {
         Route::get('/users', [UserManagementController::class, 'index'])->name('users.index');
         Route::delete('/users/{user}', [UserManagementController::class, 'destroy'])->name('users.destroy');
         Route::get('/transactions', [\App\Http\Controllers\Admin\TransactionManagementController::class, 'index'])->name('transactions.index');
@@ -123,7 +131,7 @@ Route::middleware(['auth', 'verified', 'prevent.back'])->group(function () {
 // Clicking on donate button
 Route::post('/donations/{donation}/donate', [DonationController::class, 'donate'])
     ->name('donations.donate')
-    ->middleware(['auth', 'verified']);
+    ->middleware(['auth', 'verified', 'throttle:10,1']); // max 10 donations attempts per minute per IP/user
 
 
 // Email verification
@@ -147,5 +155,8 @@ Route::get('alkitab', [AlkitabController::class, 'index'])
 
 
 // Internal API untuk Alkitab
-Route::get('/api/alkitab/{version}/{book}/{chapter}', [AlkitabController::class, 'getChapter']);
-Route::get('/api/alkitab/search/{version}', [AlkitabController::class, 'search']);
+Route::get('/api/alkitab/{version}/{book}/{chapter}', [AlkitabController::class, 'getChapter'])
+    ->middleware('throttle:60,1'); // 60 requests per minute
+
+Route::get('/api/alkitab/search/{version}', [AlkitabController::class, 'search'])
+    ->middleware('throttle:60,1'); // 60 requests per minute
