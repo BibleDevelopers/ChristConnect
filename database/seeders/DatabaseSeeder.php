@@ -28,5 +28,8 @@ class DatabaseSeeder extends Seeder
 
         // Seed donation boxes (if table exists)
         $this->call(\Database\Seeders\DonationSeeder::class);
+
+        // pastikan memanggil UserSeeder sehingga "php artisan db:seed" menjalankannya
+        $this->call(\Database\Seeders\UserSeeder::class);
     }
 }
